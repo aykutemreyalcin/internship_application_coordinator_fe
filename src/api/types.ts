@@ -113,6 +113,23 @@ export type CoordinatorDecisionRequest = {
   note?: string
 }
 
+export type ClarificationDraftResponse = {
+  caseId: string
+  status: CaseStatus
+  studentName: string
+  subject: string
+  body: string
+}
+
+export type SupervisorVerificationDraftResponse = {
+  caseId: string
+  status: CaseStatus
+  supervisorName: string
+  supervisorEmail: string
+  subject: string
+  body: string
+}
+
 export type CaseListParams = {
   status?: CaseStatus
   search?: string
