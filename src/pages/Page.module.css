@@ -104,6 +104,33 @@
   color: var(--color-text-muted);
 }
 
+.stateMessage {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.errorMessage {
+  margin: 0 0 1rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid rgb(239 68 68 / 0.35);
+  border-radius: var(--radius-md);
+  background: rgb(239 68 68 / 0.08);
+  font-size: 0.8125rem;
+  color: #fca5a5;
+}
+
+.cardGrid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .cardGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .inlineCode {
   padding: 0.125rem 0.375rem;
   border-radius: var(--radius-sm);

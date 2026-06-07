@@ -1,4 +1,17 @@
 export { api, apiClient, ApiError, isApiError, isApiErrorResponse } from './client'
+export {
+  applyDecision,
+  createCase,
+  documentUrl,
+  extractCase,
+  fetchAuditLog,
+  fetchCase,
+  fetchCases,
+  fetchValidation,
+  generateClarification,
+  generateRecommendation,
+  generateSupervisorVerification,
+} from './cases'
 export type {
   ApiErrorResponse,
   ApplicationDocument,
@@ -7,11 +20,13 @@ export type {
   CaseListParams,
   CaseStatus,
   CaseSummary,
+  ClarificationDraftResponse,
   CoordinatorDecision,
   CoordinatorDecisionRequest,
   IssueSeverity,
   PageResponse,
   Recommendation,
+  SupervisorVerificationDraftResponse,
   ValidationIssue,
   ValidationResult,
   ValidationSummary,
