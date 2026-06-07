@@ -1,18 +1,7 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
-import { AppShell } from './layout/AppShell'
-import { DashboardPage } from './pages/DashboardPage'
-import { NewApplicationPage } from './pages/NewApplicationPage'
+import { AppRoutes } from './routes'
 
 function App() {
-  return (
-    <Routes>
-      <Route element={<AppShell />}>
-        <Route index element={<DashboardPage />} />
-        <Route path="new" element={<NewApplicationPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
-    </Routes>
-  )
+  return <AppRoutes />
 }
 
 export default App
