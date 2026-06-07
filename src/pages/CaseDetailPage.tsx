@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
+import { LoadingBlock, StatusBadge } from '../components'
 import { getCaseQueryErrorMessage, useCase } from '../hooks/useCases'
 import styles from './Page.module.css'
 
@@ -15,16 +16,17 @@ export function CaseDetailPage() {
       <p className={styles.eyebrow}>Case detail</p>
       <h2 className={styles.title}>Application review</h2>
 
-      {isLoading ? <p className={styles.stateMessage}>Loading case…</p> : null}
+      {isLoading ? <LoadingBlock label="Loading case…" /> : null}
       {isError ? (
         <p className={styles.errorMessage}>{getCaseQueryErrorMessage(error)}</p>
       ) : null}
 
       {data ? (
         <>
-          <p className={styles.lead}>
-            {data.studentName ?? 'Unnamed application'} — {data.status.replaceAll('_', ' ')}
-          </p>
+          <div className={styles.statusRow}>
+            <p className={styles.lead}>{data.studentName ?? 'Unnamed application'}</p>
+            <StatusBadge status={data.status} />
+          </div>
 
           <div className={styles.cardGrid}>
             <div className={styles.card}>

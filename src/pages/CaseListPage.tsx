@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { EmptyState, LoadingBlock, StatusBadge } from '../components'
 import { getCaseQueryErrorMessage, useCaseList } from '../hooks/useCases'
 import styles from './Page.module.css'
 
@@ -13,12 +14,19 @@ export function CaseListPage() {
         Browse internship applications. Select a case to open its detail view.
       </p>
 
-      {isLoading ? <p className={styles.stateMessage}>Loading cases…</p> : null}
+      {isLoading ? <LoadingBlock label="Loading cases…" /> : null}
       {isError ? (
         <p className={styles.errorMessage}>{getCaseQueryErrorMessage(error)}</p>
       ) : null}
 
-      {data ? (
+      {data && data.content.length === 0 ? (
+        <EmptyState
+          title="No applications found"
+          description="Create a new application or adjust your filters."
+        />
+      ) : null}
+
+      {data && data.content.length > 0 ? (
         <>
           <ul className={styles.list}>
             {data.content.map((applicationCase) => (
@@ -27,9 +35,7 @@ export function CaseListPage() {
                   <span className={styles.listPrimary}>
                     {applicationCase.studentName ?? 'Unnamed application'}
                   </span>
-                  <span className={styles.listMeta}>
-                    {applicationCase.status.replaceAll('_', ' ')}
-                  </span>
+                  <StatusBadge status={applicationCase.status} />
                 </Link>
               </li>
             ))}
