@@ -1,4 +1,4 @@
-import { APP_NAME, COORDINATOR_ROLE } from '../config/app'
+import { APP_DISPLAY_NAME, COORDINATOR_ROLE } from '../config/app'
 import styles from './Header.module.css'
 
 type HeaderProps = {
@@ -27,7 +27,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
         <div className={styles.logo} aria-hidden="true">
           IAC
         </div>
-        <h1 className={styles.title}>{APP_NAME}</h1>
+        <h1 className={styles.title}>{APP_DISPLAY_NAME}</h1>
       </div>
 
       <div className={styles.role} title="Signed-in role (placeholder)">
