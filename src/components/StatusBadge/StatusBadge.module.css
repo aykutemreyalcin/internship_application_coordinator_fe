@@ -1,0 +1,46 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.NEW {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.EXTRACTING {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.NEEDS_CLARIFICATION,
+.CLARIFICATION_REQUESTED {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.PENDING_SUPERVISOR {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.READY_FOR_REVIEW {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.APPROVED {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.REJECTED {
+  background: #fee2e2;
+  color: #b91c1c;
+}
