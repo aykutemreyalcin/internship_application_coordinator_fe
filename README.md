@@ -13,11 +13,21 @@ React + TypeScript coordinator dashboard for processing student internship appli
 
 ```bash
 npm install
-cp .env.example .env   # when added
+cp .env.example .env
 npm run dev            # http://localhost:5173
 ```
 
 API base URL: `http://localhost:8080/api` (see `PROJECT_OVERVIEW.md`).
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start Vite dev server |
+| `npm run build` | Type-check and production build |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint |
+| `npm run format` | Format with Prettier |
 
 ## Branches
 
