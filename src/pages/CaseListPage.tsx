@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom'
-import { EmptyState, LoadingBlock, StatusBadge } from '../components'
-import { getCaseQueryErrorMessage, useCaseList } from '../hooks/useCases'
+import { EmptyState, LoadingBlock } from '../components'
+import { getCaseQueryErrorMessage, useCaseList } from '../api/hooks/useCases'
+import { CaseListTable } from '../features/cases/list/CaseListTable'
 import styles from './Page.module.css'
 
 export function CaseListPage() {
@@ -28,18 +28,7 @@ export function CaseListPage() {
 
       {data && data.content.length > 0 ? (
         <>
-          <ul className={styles.list}>
-            {data.content.map((applicationCase) => (
-              <li key={applicationCase.caseId}>
-                <Link to={`/cases/${applicationCase.caseId}`} className={styles.listLink}>
-                  <span className={styles.listPrimary}>
-                    {applicationCase.studentName ?? 'Unnamed application'}
-                  </span>
-                  <StatusBadge status={applicationCase.status} />
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <CaseListTable cases={data.content} />
           <p className={styles.hint}>
             Showing {data.content.length} of {data.totalElements} cases
             {import.meta.env.VITE_USE_MSW === 'true' ? ' (mock API)' : ''}.
