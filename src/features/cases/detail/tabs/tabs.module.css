@@ -11,40 +11,6 @@
   color: var(--color-text);
 }
 
-.fieldList {
-  margin: 0;
-  display: grid;
-  gap: 0.5rem;
-}
-
-.fieldRow {
-  display: grid;
-  grid-template-columns: 10rem 1fr;
-  gap: 0.5rem 1rem;
-  padding: 0.625rem 0.75rem;
-  border-radius: var(--radius-sm);
-  background: var(--color-accent-muted);
-  border: 1px solid transparent;
-}
-
-.fieldMissing {
-  border-color: rgb(239 68 68 / 0.35);
-  background: rgb(239 68 68 / 0.08);
-}
-
-.fieldLabel {
-  margin: 0;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--color-text-muted);
-}
-
-.fieldValue {
-  margin: 0;
-  font-size: 0.875rem;
-  color: var(--color-text);
-}
-
 .validationSection {
   padding: 0.875rem;
   border: 1px solid var(--color-border);
