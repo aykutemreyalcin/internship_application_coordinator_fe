@@ -1,46 +1,57 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.625rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  max-width: 100%;
+  padding: 0.1875rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 500;
   letter-spacing: 0.02em;
-  text-transform: uppercase;
+  line-height: 1.4;
+  white-space: nowrap;
 }
 
-.NEW {
-  background: #f1f5f9;
-  color: #475569;
+.toneDefault,
+.toneNEW {
+  color: #d4d4d8;
+  background: rgb(255 255 255 / 0.04);
+  border-color: rgb(255 255 255 / 0.1);
 }
 
-.EXTRACTING {
-  background: #dbeafe;
-  color: #1d4ed8;
+.toneEXTRACTING {
+  color: #93c5fd;
+  background: rgb(59 130 246 / 0.12);
+  border-color: rgb(59 130 246 / 0.28);
 }
 
-.NEEDS_CLARIFICATION,
-.CLARIFICATION_REQUESTED {
-  background: #fef3c7;
-  color: #b45309;
+.toneNEEDS_CLARIFICATION,
+.toneCLARIFICATION_REQUESTED {
+  color: #fcd34d;
+  background: rgb(245 158 11 / 0.12);
+  border-color: rgb(245 158 11 / 0.28);
 }
 
-.PENDING_SUPERVISOR {
-  background: #ede9fe;
-  color: #6d28d9;
+.tonePENDING_SUPERVISOR {
+  color: #c4b5fd;
+  background: rgb(139 92 246 / 0.12);
+  border-color: rgb(139 92 246 / 0.28);
 }
 
-.READY_FOR_REVIEW {
-  background: #e0f2fe;
-  color: #0369a1;
+.toneREADY_FOR_REVIEW {
+  color: #67e8f9;
+  background: rgb(6 182 212 / 0.12);
+  border-color: rgb(6 182 212 / 0.28);
 }
 
-.APPROVED {
-  background: #dcfce7;
-  color: #15803d;
+.toneAPPROVED {
+  color: #86efac;
+  background: rgb(34 197 94 / 0.12);
+  border-color: rgb(34 197 94 / 0.28);
 }
 
-.REJECTED {
-  background: #fee2e2;
-  color: #b91c1c;
+.toneREJECTED {
+  color: #fca5a5;
+  background: rgb(239 68 68 / 0.12);
+  border-color: rgb(239 68 68 / 0.28);
 }

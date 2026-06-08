@@ -1,15 +1,28 @@
 import styles from './Spinner.module.css'
 
-interface SpinnerProps {
+type SpinnerSize = 'sm' | 'md' | 'lg'
+
+type SpinnerProps = {
+  size?: SpinnerSize
   label?: string
-  fullPage?: boolean
+  className?: string
 }
 
-export function Spinner({ label = 'Loading…', fullPage = false }: SpinnerProps) {
+export function Spinner({ size = 'md', label = 'Loading', className }: SpinnerProps) {
   return (
-    <div className={fullPage ? styles.fullPage : styles.inline} role="status" aria-live="polite">
-      <div className={styles.spinner} aria-hidden="true" />
-      <span className={styles.label}>{label}</span>
+    <span
+      className={[styles.spinner, styles[size], className].filter(Boolean).join(' ')}
+      role="status"
+      aria-label={label}
+    />
+  )
+}
+
+export function LoadingBlock({ label = 'Loading…' }: { label?: string }) {
+  return (
+    <div className={styles.block}>
+      <Spinner size="md" label={label} />
+      <span className={styles.blockLabel}>{label}</span>
     </div>
   )
 }

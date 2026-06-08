@@ -1,23 +1,18 @@
 import type { CaseStatus } from '../../api/types'
+import { STATUS_LABELS } from './statusBadgeLabels'
 import styles from './StatusBadge.module.css'
 
-const statusLabels: Record<CaseStatus, string> = {
-  NEW: 'New',
-  EXTRACTING: 'Extracting',
-  NEEDS_CLARIFICATION: 'Needs Clarification',
-  PENDING_SUPERVISOR: 'Pending Supervisor',
-  READY_FOR_REVIEW: 'Ready for Review',
-  APPROVED: 'Approved',
-  REJECTED: 'Rejected',
-  CLARIFICATION_REQUESTED: 'Clarification Requested',
-}
-
-interface StatusBadgeProps {
+type StatusBadgeProps = {
   status: CaseStatus
+  className?: string
 }
 
-export function StatusBadge({ status }: StatusBadgeProps) {
+export function StatusBadge({ status, className }: StatusBadgeProps) {
+  const toneClass = styles[`tone${status}` as keyof typeof styles] ?? styles.toneDefault
+
   return (
-    <span className={`${styles.badge} ${styles[status]}`}>{statusLabels[status]}</span>
+    <span className={[styles.badge, toneClass, className].filter(Boolean).join(' ')}>
+      {STATUS_LABELS[status]}
+    </span>
   )
 }

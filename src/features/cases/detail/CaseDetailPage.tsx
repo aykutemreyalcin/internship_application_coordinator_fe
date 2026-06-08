@@ -1,9 +1,7 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ApiClientError, isNotFoundError } from '../../../api/client'
+import { isApiError, isNotFoundError } from '../../../api/client'
 import { useCase } from '../../../api/hooks/useCase'
-import { Button } from '../../../components/Button/Button'
-import { EmptyState } from '../../../components/EmptyState/EmptyState'
-import { Spinner } from '../../../components/Spinner/Spinner'
+import { Button, EmptyState, LoadingBlock } from '../../../components'
 import { CaseDetailLayout } from './CaseDetailLayout'
 import styles from './CaseDetailPage.module.css'
 
@@ -13,22 +11,21 @@ export function CaseDetailPage() {
   const { data, isLoading, isError, error, refetch, isFetching } = useCase(id)
 
   if (isLoading) {
-    return <Spinner label="Loading case details…" fullPage />
+    return <LoadingBlock label="Loading case details…" />
   }
 
   if (isError && isNotFoundError(error)) {
     return (
       <EmptyState
-        variant="notFound"
         title="Case not found"
         description={
-          error instanceof ApiClientError
+          isApiError(error)
             ? error.message
             : 'The requested case does not exist or may have been removed.'
         }
         action={
           <Button variant="secondary" onClick={() => navigate('/')}>
-            Back to dashboard
+            Back to case list
           </Button>
         }
       />
@@ -36,19 +33,17 @@ export function CaseDetailPage() {
   }
 
   if (isError) {
-    const message =
-      error instanceof ApiClientError
-        ? error.message
-        : 'Something went wrong while loading this case.'
+    const message = isApiError(error)
+      ? error.message
+      : 'Something went wrong while loading this case.'
 
     return (
       <EmptyState
-        variant="error"
         title="Failed to load case"
         description={message}
         action={
-          <Button variant="primary" onClick={() => refetch()} disabled={isFetching}>
-            {isFetching ? 'Retrying…' : 'Try again'}
+          <Button variant="primary" onClick={() => refetch()} loading={isFetching}>
+            Try again
           </Button>
         }
       />
@@ -58,12 +53,11 @@ export function CaseDetailPage() {
   if (!data) {
     return (
       <EmptyState
-        variant="notFound"
         title="Case not found"
         description="No case data was returned for this ID."
         action={
           <Button variant="secondary" onClick={() => navigate('/')}>
-            Back to dashboard
+            Back to case list
           </Button>
         }
       />
@@ -74,9 +68,9 @@ export function CaseDetailPage() {
     <div className={styles.page}>
       <header className={styles.header}>
         <Link to="/" className={styles.backLink}>
-          ← Back
+          ← Back to case list
         </Link>
-        <h1 className={styles.title}>Case Detail</h1>
+        <h1 className={styles.title}>Case detail</h1>
       </header>
       <CaseDetailLayout caseData={data} />
     </div>

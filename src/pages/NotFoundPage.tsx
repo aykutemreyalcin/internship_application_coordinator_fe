@@ -1,20 +1,22 @@
-import { useNavigate } from 'react-router-dom'
-import { Button } from '../components/Button/Button'
-import { EmptyState } from '../components/EmptyState/EmptyState'
+import { Link } from 'react-router-dom'
+import styles from './Page.module.css'
 
 export function NotFoundPage() {
-  const navigate = useNavigate()
-
   return (
-    <EmptyState
-      variant="notFound"
-      title="Page not found"
-      description="The page you are looking for does not exist."
-      action={
-        <Button variant="secondary" onClick={() => navigate('/')}>
-          Go to dashboard
-        </Button>
-      }
-    />
+    <section className={`${styles.page} ${styles.notFound}`}>
+      <p className={styles.notFoundCode}>404</p>
+      <h2 className={styles.title}>Page not found</h2>
+      <p className={styles.lead}>
+        The route you requested does not exist. Check the URL or return to the case list.
+      </p>
+      <div className={styles.actions}>
+        <Link to="/" className={styles.buttonLink}>
+          Go to case list
+        </Link>
+        <Link to="/new" className={styles.buttonLinkSecondary}>
+          New application
+        </Link>
+      </div>
+    </section>
   )
 }

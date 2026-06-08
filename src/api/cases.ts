@@ -1,26 +1,81 @@
-import { api, ApiClientError } from './client'
-import { getMockCase } from '../mocks/cases'
-import type { Case } from './types'
+import { api } from './client'
+import type {
+  AuditLogEntry,
+  Case,
+  CaseListParams,
+  CaseSummary,
+  ClarificationDraftResponse,
+  CoordinatorDecisionRequest,
+  PageResponse,
+  SupervisorVerificationDraftResponse,
+  ValidationSummary,
+} from './types'
 
-const useMocks = import.meta.env.VITE_USE_MOCKS === 'true'
-
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+export async function fetchCases(params: CaseListParams = {}): Promise<PageResponse<CaseSummary>> {
+  const { data } = await api.get<PageResponse<CaseSummary>>('/cases', { params })
+  return data
 }
 
-export async function getCase(id: string): Promise<Case> {
-  if (useMocks) {
-    await delay(400)
-    return getMockCase(id)
-  }
+export async function fetchCase(caseId: string): Promise<Case> {
+  const { data } = await api.get<Case>(`/cases/${caseId}`)
+  return data
+}
 
-  try {
-    const response = await api.get<Case>(`/cases/${id}`)
-    return response.data
-  } catch (error) {
-    if (error instanceof ApiClientError) {
-      throw error
-    }
-    throw error
-  }
+/** Alias used by case detail hooks. */
+export const getCase = fetchCase
+
+export async function createCase(file: File): Promise<Case> {
+  const formData = new FormData()
+  formData.append('file', file)
+  const { data } = await api.post<Case>('/cases', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+  return data
+}
+
+export async function extractCase(caseId: string): Promise<Case> {
+  const { data } = await api.post<Case>(`/cases/${caseId}/extract`)
+  return data
+}
+
+export async function fetchValidation(caseId: string): Promise<ValidationSummary> {
+  const { data } = await api.get<ValidationSummary>(`/cases/${caseId}/validation`)
+  return data
+}
+
+export async function generateRecommendation(caseId: string): Promise<Case> {
+  const { data } = await api.post<Case>(`/cases/${caseId}/recommendation`)
+  return data
+}
+
+export async function applyDecision(
+  caseId: string,
+  request: CoordinatorDecisionRequest,
+): Promise<Case> {
+  const { data } = await api.post<Case>(`/cases/${caseId}/decision`, request)
+  return data
+}
+
+export async function generateClarification(caseId: string): Promise<ClarificationDraftResponse> {
+  const { data } = await api.post<ClarificationDraftResponse>(`/cases/${caseId}/clarification`)
+  return data
+}
+
+export async function generateSupervisorVerification(
+  caseId: string,
+): Promise<SupervisorVerificationDraftResponse> {
+  const { data } = await api.post<SupervisorVerificationDraftResponse>(
+    `/cases/${caseId}/supervisor-verification`,
+  )
+  return data
+}
+
+export async function fetchAuditLog(caseId: string): Promise<AuditLogEntry[]> {
+  const { data } = await api.get<AuditLogEntry[]>(`/cases/${caseId}/audit`)
+  return data
+}
+
+export function documentUrl(caseId: string, documentId: string): string {
+  const baseUrl = api.defaults.baseURL?.replace(/\/$/, '') ?? ''
+  return `${baseUrl}/cases/${caseId}/documents/${documentId}`
 }

@@ -1,5 +1,36 @@
-export { api, ApiClientError, isNotFoundError } from './client'
-export { getCase } from './cases'
-export { useCase } from './hooks/useCase'
-export { caseKeys } from './queryKeys'
-export type * from './types'
+export { api, apiClient, ApiError, isApiError, isApiErrorResponse, isNotFoundError } from './client'
+export {
+  applyDecision,
+  createCase,
+  documentUrl,
+  extractCase,
+  fetchAuditLog,
+  fetchCase,
+  fetchCases,
+  fetchValidation,
+  generateClarification,
+  generateRecommendation,
+  generateSupervisorVerification,
+  getCase,
+} from './cases'
+export type {
+  ApiErrorResponse,
+  ApplicationDocument,
+  AuditLogEntry,
+  Case,
+  CaseListParams,
+  CaseStatus,
+  CaseSummary,
+  ClarificationDraftResponse,
+  CoordinatorDecision,
+  CoordinatorDecisionRequest,
+  IssueSeverity,
+  PageResponse,
+  Recommendation,
+  SupervisorVerificationDraftResponse,
+  ValidationIssue,
+  ValidationResult,
+  ValidationSummary,
+  ValidationType,
+} from './types'
+export { CASE_STATUSES, ISSUE_SEVERITIES, RECOMMENDATIONS, VALIDATION_TYPES } from './types'
