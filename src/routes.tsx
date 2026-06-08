@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
+import { CaseDetailPage } from './features/cases/detail/CaseDetailPage'
 import { AppShell } from './layout/AppShell'
-import { CaseDetailPage } from './pages/CaseDetailPage'
 import { CaseListPage } from './pages/CaseListPage'
 import { ComponentsDemoPage } from './pages/ComponentsDemoPage'
 import { NewApplicationPage } from './pages/NewApplicationPage'

@@ -1,0 +1,206 @@
+.tabContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tabHeading {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.fieldList {
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: 0.5rem 1rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-muted);
+  border: 1px solid transparent;
+}
+
+.fieldMissing {
+  border-color: rgb(239 68 68 / 0.35);
+  background: rgb(239 68 68 / 0.08);
+}
+
+.fieldLabel {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.fieldValue {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text);
+}
+
+.validationSection {
+  padding: 0.875rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-muted);
+}
+
+.validationHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.625rem;
+}
+
+.validationTitle {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.passBadge,
+.failBadge {
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.passBadge {
+  background: rgb(34 197 94 / 0.14);
+  color: #86efac;
+}
+
+.failBadge {
+  background: rgb(239 68 68 / 0.14);
+  color: #fca5a5;
+}
+
+.noIssues {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.issueList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.issueItem {
+  display: grid;
+  grid-template-columns: 8rem 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  border: 1px solid var(--color-border);
+}
+
+.severityERROR {
+  background: rgb(239 68 68 / 0.08);
+}
+
+.severityWARNING {
+  background: rgb(245 158 11 / 0.08);
+}
+
+.severityINFO {
+  background: rgb(59 130 246 / 0.08);
+}
+
+.issueField {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.issueMessage {
+  color: var(--color-text-secondary);
+}
+
+.severityBadge {
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: var(--color-accent-soft);
+  color: var(--color-text-muted);
+}
+
+.recommendationCard,
+.decisionSection {
+  padding: 0.875rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-muted);
+}
+
+.sectionLabel {
+  margin: 0 0 0.625rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.recommendationBadge {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.recAPPROVE {
+  background: rgb(34 197 94 / 0.14);
+  color: #86efac;
+}
+
+.recREJECT {
+  background: rgb(239 68 68 / 0.14);
+  color: #fca5a5;
+}
+
+.recCLARIFY {
+  background: rgb(245 158 11 / 0.14);
+  color: #fcd34d;
+}
+
+.recommendationReason {
+  margin: 0.625rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.placeholder {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.statusNote {
+  margin: 0.625rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.placeholder code {
+  font-size: 0.75em;
+}

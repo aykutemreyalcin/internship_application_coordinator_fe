@@ -45,6 +45,10 @@ export function isApiError(error: unknown): error is ApiError {
   return error instanceof ApiError
 }
 
+export function isNotFoundError(error: unknown): boolean {
+  return isApiError(error) && error.status === 404
+}
+
 function normalizeError(error: unknown): Promise<never> {
   if (isAxiosError(error)) {
     const axiosError = error as AxiosError

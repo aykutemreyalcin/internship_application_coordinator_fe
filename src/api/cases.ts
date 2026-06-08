@@ -21,6 +21,9 @@ export async function fetchCase(caseId: string): Promise<Case> {
   return data
 }
 
+/** Alias used by case detail hooks. */
+export const getCase = fetchCase
+
 export async function createCase(file: File): Promise<Case> {
   const formData = new FormData()
   formData.append('file', file)

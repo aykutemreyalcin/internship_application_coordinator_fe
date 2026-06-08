@@ -1,4 +1,4 @@
-export { api, apiClient, ApiError, isApiError, isApiErrorResponse } from './client'
+export { api, apiClient, ApiError, isApiError, isApiErrorResponse, isNotFoundError } from './client'
 export {
   applyDecision,
   createCase,
@@ -11,6 +11,7 @@ export {
   generateClarification,
   generateRecommendation,
   generateSupervisorVerification,
+  getCase,
 } from './cases'
 export type {
   ApiErrorResponse,
