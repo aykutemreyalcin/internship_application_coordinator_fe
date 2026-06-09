@@ -16,6 +16,11 @@ const incompleteValidation: ValidationSummary = {
         message: 'Student ID is missing',
         severity: 'ERROR',
       },
+      {
+        field: 'companyName',
+        message: 'Company name could not be fully verified from document',
+        severity: 'INFO',
+      },
     ],
   },
   rules: { passed: true, issues: [] },
@@ -44,6 +49,11 @@ const ruleViolationValidation: ValidationSummary = {
         field: 'internshipEndDate',
         message: 'Internship duration must be at least 84 days (actual: 30)',
         severity: 'ERROR',
+      },
+      {
+        field: 'internshipStartDate',
+        message: 'Start date is very close to semester end — verify with coordinator',
+        severity: 'WARNING',
       },
     ],
   },

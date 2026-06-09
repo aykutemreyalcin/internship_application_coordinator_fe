@@ -1,13 +1,22 @@
-import type { ValidationIssue, ValidationResult } from '../../../../api/types'
+import { isNotFoundError } from '../../../../api/client'
+import {
+  getValidationQueryErrorMessage,
+  useValidation,
+} from '../../../../api/hooks/useValidation'
+import type { ValidationIssue, ValidationResult, ValidationSummary } from '../../../../api/types'
+import { Button, EmptyState, LoadingBlock } from '../../../../components'
 import styles from './tabs.module.css'
 
 interface ValidationTabProps {
-  caseData: {
-    validation: {
-      completeness: ValidationResult
-      rules: ValidationResult
-    } | null
-  }
+  caseId: string
+}
+
+function SeverityBadge({ severity }: { severity: ValidationIssue['severity'] }) {
+  return (
+    <span className={`${styles.severityBadge} ${styles[`severityBadge${severity}`]}`}>
+      {severity}
+    </span>
+  )
 }
 
 function ValidationSection({ title, block }: { title: string; block: ValidationResult }) {
@@ -26,14 +35,14 @@ function ValidationSection({ title, block }: { title: string; block: ValidationR
         <p className={styles.noIssues}>No issues found.</p>
       ) : (
         <ul className={styles.issueList}>
-          {block.issues.map((issue: ValidationIssue) => (
+          {block.issues.map((issue) => (
             <li
               key={`${issue.field}-${issue.message}`}
               className={`${styles.issueItem} ${styles[`severity${issue.severity}`]}`}
             >
               <span className={styles.issueField}>{issue.field}</span>
               <span className={styles.issueMessage}>{issue.message}</span>
-              <span className={styles.severityBadge}>{issue.severity}</span>
+              <SeverityBadge severity={issue.severity} />
             </li>
           ))}
         </ul>
@@ -42,12 +51,66 @@ function ValidationSection({ title, block }: { title: string; block: ValidationR
   )
 }
 
-export function ValidationTab({ caseData }: ValidationTabProps) {
-  if (!caseData.validation) {
+function ValidationSummaryBanner({ validation }: { validation: ValidationSummary }) {
+  const totalIssues =
+    validation.completeness.issues.length + validation.rules.issues.length
+  const allPassed = validation.completeness.passed && validation.rules.passed
+
+  return (
+    <div
+      className={`${styles.validationSummary} ${allPassed ? styles.validationSummaryPass : styles.validationSummaryFail}`}
+      role="status"
+    >
+      <span className={styles.validationSummaryLabel}>
+        {allPassed ? 'All validations passed' : 'Validation issues found'}
+      </span>
+      <span className={styles.validationSummaryMeta}>
+        {totalIssues} issue{totalIssues === 1 ? '' : 's'} · Completeness{' '}
+        {validation.completeness.passed ? 'passed' : 'failed'} · Rules{' '}
+        {validation.rules.passed ? 'passed' : 'failed'}
+      </span>
+    </div>
+  )
+}
+
+export function ValidationTab({ caseId }: ValidationTabProps) {
+  const { data, isLoading, isError, error, refetch, isFetching } = useValidation(caseId)
+
+  if (isLoading) {
+    return <LoadingBlock label="Loading validation results…" />
+  }
+
+  if (isError && isNotFoundError(error)) {
     return (
       <div className={styles.tabContent}>
         <h3 className={styles.tabHeading}>Validation Results</h3>
-        <p className={styles.placeholder}>Validation has not been run for this case yet.</p>
+        <p className={styles.placeholder}>
+          Validation has not been run for this case yet. Run extraction first to populate
+          validation results.
+        </p>
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <EmptyState
+        title="Failed to load validation"
+        description={getValidationQueryErrorMessage(error)}
+        action={
+          <Button variant="primary" onClick={() => refetch()} loading={isFetching}>
+            Try again
+          </Button>
+        }
+      />
+    )
+  }
+
+  if (!data) {
+    return (
+      <div className={styles.tabContent}>
+        <h3 className={styles.tabHeading}>Validation Results</h3>
+        <p className={styles.placeholder}>No validation data available.</p>
       </div>
     )
   }
@@ -55,8 +118,9 @@ export function ValidationTab({ caseData }: ValidationTabProps) {
   return (
     <div className={styles.tabContent}>
       <h3 className={styles.tabHeading}>Validation Results</h3>
-      <ValidationSection title="Completeness" block={caseData.validation.completeness} />
-      <ValidationSection title="University Rules" block={caseData.validation.rules} />
+      <ValidationSummaryBanner validation={data} />
+      <ValidationSection title="Completeness" block={data.completeness} />
+      <ValidationSection title="University Rules" block={data.rules} />
     </div>
   )
 }

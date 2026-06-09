@@ -84,11 +84,21 @@ export const handlers = [
   }),
 
   http.get('*/api/cases/:id/validation', ({ params, request }) => {
-    const applicationCase = getMockCase(String(params.id))
+    const caseId = String(params.id)
+    const applicationCase = getMockCase(caseId)
     if (!applicationCase) {
       return apiError(404, 'Not Found', 'Case not found', casePath(request))
     }
-    return HttpResponse.json(getMockValidation(String(params.id)))
+    const validation = getMockValidation(caseId)
+    if (!validation) {
+      return apiError(
+        404,
+        'Not Found',
+        'Validation has not been run for this case yet',
+        casePath(request),
+      )
+    }
+    return HttpResponse.json(validation)
   }),
 
   http.post('*/api/cases/:id/recommendation', ({ params, request }) => {

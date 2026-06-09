@@ -17,7 +17,7 @@ export function CaseDetailLayout({ caseData }: CaseDetailLayoutProps) {
     {
       id: 'validation',
       label: 'Validation',
-      content: <ValidationTab caseData={caseData} />,
+      content: <ValidationTab caseId={caseData.caseId} />,
     },
     {
       id: 'recommendation',
