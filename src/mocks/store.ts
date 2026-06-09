@@ -250,10 +250,7 @@ export function extractMockCase(caseId: string): Case | undefined {
 export function getMockValidation(caseId: string) {
   const applicationCase = getMockCase(caseId)
   if (!applicationCase?.validation) {
-    return {
-      completeness: { passed: false, issues: [] },
-      rules: { passed: false, issues: [] },
-    }
+    return undefined
   }
   return applicationCase.validation
 }
