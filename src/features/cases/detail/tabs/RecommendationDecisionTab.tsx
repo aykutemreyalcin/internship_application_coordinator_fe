@@ -87,11 +87,16 @@ export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTa
             )}
           </div>
         ) : (
-          <p className={styles.placeholder}>No recommendation generated yet.</p>
+          <div className={styles.recommendationEmpty}>
+            <p className={styles.placeholder}>
+              No recommendation generated yet. Run validation first, then generate an AI
+              recommendation based on extracted fields and validation results.
+            </p>
+          </div>
         )}
 
         {generateMutation.isError && (
-          <p className={styles.decisionError} role="alert">
+          <p className={styles.recommendationError} role="alert">
             Failed to generate recommendation. Please try again.
           </p>
         )}

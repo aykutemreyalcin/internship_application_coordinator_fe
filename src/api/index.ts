@@ -24,6 +24,7 @@ export type {
   ClarificationDraftResponse,
   CoordinatorDecision,
   CoordinatorDecisionRequest,
+  EditableCaseField,
   IssueSeverity,
   PageResponse,
   Recommendation,

@@ -1,7 +1,7 @@
 import { Tabs, type TabItem } from '../../../components/Tabs/Tabs'
 import type { Case } from '../../../api/types'
 import { CaseSummaryPanel } from './CaseSummaryPanel'
-import { FieldsTab } from './tabs/FieldsTab'
+import { FieldsTab } from './fields/FieldsTab'
 import { ValidationTab } from './tabs/ValidationTab'
 import { RecommendationDecisionTab } from './tabs/RecommendationDecisionTab'
 import { HistoryTab } from './tabs/HistoryTab'
