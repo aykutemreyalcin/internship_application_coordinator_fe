@@ -33,6 +33,8 @@ function newId(prefix: string): string {
   return `${prefix}-${Date.now()}`
 }
 
+const MOCK_EXTRACTION_DELAY_MS = 2000
+
 let cases: Case[] = MOCK_CASES.map(cloneCase)
 const auditLogs = new Map<string, AuditLogEntry[]>(
   Object.entries(MOCK_AUDIT_LOGS).map(([caseId, entries]) => [
@@ -40,8 +42,17 @@ const auditLogs = new Map<string, AuditLogEntry[]>(
     entries.map(cloneAuditLog),
   ]),
 )
+const pendingExtractions = new Map<string, ReturnType<typeof setTimeout>>()
+
+function clearPendingExtractions(): void {
+  for (const timeout of pendingExtractions.values()) {
+    clearTimeout(timeout)
+  }
+  pendingExtractions.clear()
+}
 
 export function resetMockStore(): void {
+  clearPendingExtractions()
   cases = MOCK_CASES.map(cloneCase)
   auditLogs.clear()
   for (const [caseId, entries] of Object.entries(MOCK_AUDIT_LOGS)) {
@@ -159,9 +170,14 @@ function appendAudit(caseId: string, actor: string, action: string, detail: stri
   auditLogs.set(caseId, entries)
 }
 
-export function extractMockCase(caseId: string): Case | undefined {
+function completeMockExtraction(caseId: string): Case | undefined {
   return updateCase(caseId, (applicationCase) => {
-    appendAudit(caseId, 'Document Extraction Agent', 'EXTRACTION_COMPLETED', 'Fields extracted from PDF')
+    appendAudit(
+      caseId,
+      'Document Extraction Agent',
+      'EXTRACTION_COMPLETED',
+      'Fields extracted from PDF',
+    )
 
     if (applicationCase.studentName) {
       return { ...applicationCase, status: 'READY_FOR_REVIEW' }
@@ -184,6 +200,51 @@ export function extractMockCase(caseId: string): Case | undefined {
       },
     }
   })
+}
+
+export function startMockExtraction(caseId: string): Case | undefined {
+  const existing = getMockCase(caseId)
+  if (!existing) {
+    return undefined
+  }
+
+  if (existing.status === 'EXTRACTING') {
+    return existing
+  }
+
+  const extractingCase = updateCase(caseId, (applicationCase) => ({
+    ...applicationCase,
+    status: 'EXTRACTING',
+  }))
+
+  if (!extractingCase) {
+    return undefined
+  }
+
+  appendAudit(
+    caseId,
+    'Document Extraction Agent',
+    'EXTRACTION_STARTED',
+    'Document extraction in progress',
+  )
+
+  const existingTimeout = pendingExtractions.get(caseId)
+  if (existingTimeout) {
+    clearTimeout(existingTimeout)
+  }
+
+  const timeout = setTimeout(() => {
+    completeMockExtraction(caseId)
+    pendingExtractions.delete(caseId)
+  }, MOCK_EXTRACTION_DELAY_MS)
+
+  pendingExtractions.set(caseId, timeout)
+  return extractingCase
+}
+
+/** @deprecated Use startMockExtraction for async extraction flow. */
+export function extractMockCase(caseId: string): Case | undefined {
+  return completeMockExtraction(caseId)
 }
 
 export function getMockValidation(caseId: string) {

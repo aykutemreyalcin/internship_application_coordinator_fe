@@ -1,4 +1,6 @@
+import { useExtractCase } from '../../../../api/hooks/useExtractCase'
 import type { Case } from '../../../../api/types'
+import { Button } from '../../../../components'
 import styles from './tabs.module.css'
 
 interface FieldsTabProps {
@@ -20,6 +22,10 @@ function formatDate(value: string | null): string | null {
 }
 
 export function FieldsTab({ caseData }: FieldsTabProps) {
+  const extractMutation = useExtractCase(caseData.caseId)
+  const isExtracting = caseData.status === 'EXTRACTING'
+  const isExtractDisabled = isExtracting || extractMutation.isPending
+
   const fields: FieldRow[] = [
     { label: 'Student Name', value: caseData.studentName },
     { label: 'Student ID', value: caseData.studentId },
@@ -39,8 +45,33 @@ export function FieldsTab({ caseData }: FieldsTabProps) {
 
   return (
     <div className={styles.tabContent}>
-      <h3 className={styles.tabHeading}>Extracted Fields</h3>
-      <dl className={styles.fieldList}>
+      <div className={styles.fieldsHeader}>
+        <div>
+          <h3 className={styles.tabHeading}>Extracted Fields</h3>
+          {isExtracting && (
+            <p className={styles.extractingNotice} role="status">
+              Extraction in progress — fields will refresh automatically when complete.
+            </p>
+          )}
+        </div>
+        <Button
+          variant="secondary"
+          size="sm"
+          loading={isExtractDisabled}
+          disabled={isExtractDisabled}
+          onClick={() => extractMutation.mutate()}
+        >
+          {isExtracting ? 'Extracting…' : 'Re-extract'}
+        </Button>
+      </div>
+
+      {extractMutation.isError && (
+        <p className={styles.extractError} role="alert">
+          Failed to start extraction. Please try again.
+        </p>
+      )}
+
+      <dl className={`${styles.fieldList} ${isExtracting ? styles.fieldListDisabled : ''}`}>
         {fields.map((field) => (
           <div
             key={field.label}
