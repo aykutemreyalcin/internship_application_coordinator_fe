@@ -61,6 +61,19 @@ export async function generateClarification(caseId: string): Promise<Clarificati
   return data
 }
 
+export type ClarificationSendRequest = {
+  subject: string
+  body: string
+}
+
+export async function sendClarification(
+  caseId: string,
+  request: ClarificationSendRequest,
+): Promise<Case> {
+  const { data } = await api.post<Case>(`/cases/${caseId}/clarification/send`, request)
+  return data
+}
+
 export async function generateSupervisorVerification(
   caseId: string,
 ): Promise<SupervisorVerificationDraftResponse> {

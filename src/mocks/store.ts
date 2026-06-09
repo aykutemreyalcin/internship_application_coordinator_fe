@@ -350,6 +350,30 @@ export function buildClarificationDraft(caseId: string) {
   }
 }
 
+export function sendMockClarificationEmail(
+  caseId: string,
+  payload: { subject: string; body: string },
+): Case | undefined {
+  const applicationCase = getMockCase(caseId)
+  if (!applicationCase) {
+    return undefined
+  }
+
+  return updateCase(caseId, (currentCase) => {
+    appendAudit(
+      caseId,
+      'COORDINATOR',
+      'CLARIFICATION_SENT',
+      `Clarification email sent to student — "${payload.subject}"`,
+    )
+
+    return {
+      ...currentCase,
+      status: 'CLARIFICATION_REQUESTED',
+    }
+  })
+}
+
 export function buildSupervisorVerificationDraft(caseId: string) {
   const applicationCase = getMockCase(caseId)
   if (!applicationCase) {
