@@ -4,73 +4,10 @@
   gap: 1rem;
 }
 
-.fieldsHeader {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
 .tabHeading {
   margin: 0;
   font-size: 0.9375rem;
   font-weight: 600;
-  color: var(--color-text);
-}
-
-.extractingNotice {
-  margin: 0.375rem 0 0;
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-}
-
-.extractError {
-  margin: 0;
-  padding: 0.625rem 0.75rem;
-  border-radius: var(--radius-sm);
-  background: rgb(239 68 68 / 0.08);
-  border: 1px solid rgb(239 68 68 / 0.25);
-  font-size: 0.8125rem;
-  color: rgb(185 28 28);
-}
-
-.fieldListDisabled {
-  opacity: 0.65;
-  pointer-events: none;
-}
-
-.fieldList {
-  margin: 0;
-  display: grid;
-  gap: 0.5rem;
-}
-
-.fieldRow {
-  display: grid;
-  grid-template-columns: 10rem 1fr;
-  gap: 0.5rem 1rem;
-  padding: 0.625rem 0.75rem;
-  border-radius: var(--radius-sm);
-  background: var(--color-accent-muted);
-  border: 1px solid transparent;
-}
-
-.fieldMissing {
-  border-color: rgb(239 68 68 / 0.35);
-  background: rgb(239 68 68 / 0.08);
-}
-
-.fieldLabel {
-  margin: 0;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--color-text-muted);
-}
-
-.fieldValue {
-  margin: 0;
-  font-size: 0.875rem;
   color: var(--color-text);
 }
 
