@@ -178,6 +178,39 @@
   background: var(--color-accent-muted);
 }
 
+.recommendationCardHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.625rem;
+  margin-bottom: 0.75rem;
+}
+
+.recommendationCardHeader .sectionLabel {
+  margin: 0;
+}
+
+.recommendationContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.recommendationEmpty {
+  padding: 0.25rem 0;
+}
+
+.recommendationError {
+  margin: 0.75rem 0 0;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: rgb(239 68 68 / 0.08);
+  border: 1px solid rgb(239 68 68 / 0.25);
+  font-size: 0.8125rem;
+  color: #fca5a5;
+}
+
 .sectionLabel {
   margin: 0 0 0.625rem;
   font-size: 0.6875rem;
@@ -211,9 +244,13 @@
 }
 
 .recommendationReason {
-  margin: 0.625rem 0 0;
-  font-size: 0.8125rem;
-  line-height: 1.6;
+  margin: 0;
+  padding: 0.75rem 0.875rem;
+  border-left: 3px solid var(--color-border);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--color-accent-soft);
+  font-size: 0.875rem;
+  line-height: 1.65;
   color: var(--color-text-secondary);
 }
 

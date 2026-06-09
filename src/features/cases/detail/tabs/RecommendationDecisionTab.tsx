@@ -1,38 +1,69 @@
-import type { Case } from '../../../../api/types'
+import { useGenerateRecommendation } from '../../../../api/hooks/useGenerateRecommendation'
+import type { Case, Recommendation } from '../../../../api/types'
+import { Button } from '../../../../components'
 import styles from './tabs.module.css'
 
 interface RecommendationDecisionTabProps {
   caseData: Case
 }
 
-const recommendationLabels = {
+const RECOMMENDATION_LABELS: Record<Recommendation, string> = {
   APPROVE: 'Approve',
   REJECT: 'Reject',
   CLARIFY: 'Request Clarification',
-} as const
+}
 
 export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTabProps) {
+  const generateMutation = useGenerateRecommendation(caseData.caseId)
   const hasRecommendation = caseData.recommendation !== null
+  const isGenerating = generateMutation.isPending
 
   return (
     <div className={styles.tabContent}>
       <h3 className={styles.tabHeading}>Recommendation & Decision</h3>
 
       <section className={styles.recommendationCard}>
-        <h4 className={styles.sectionLabel}>AI Recommendation</h4>
+        <div className={styles.recommendationCardHeader}>
+          <h4 className={styles.sectionLabel}>AI Recommendation</h4>
+          <Button
+            variant="secondary"
+            size="sm"
+            loading={isGenerating}
+            disabled={isGenerating}
+            onClick={() => generateMutation.mutate()}
+          >
+            {hasRecommendation ? 'Regenerate recommendation' : 'Generate recommendation'}
+          </Button>
+        </div>
+
         {hasRecommendation ? (
-          <>
+          <div className={styles.recommendationContent}>
             <span
               className={`${styles.recommendationBadge} ${styles[`rec${caseData.recommendation}`]}`}
             >
-              {recommendationLabels[caseData.recommendation!]}
+              {RECOMMENDATION_LABELS[caseData.recommendation!]}
             </span>
-            {caseData.recommendationReason && (
-              <p className={styles.recommendationReason}>{caseData.recommendationReason}</p>
+            {caseData.recommendationReason ? (
+              <blockquote className={styles.recommendationReason}>
+                {caseData.recommendationReason}
+              </blockquote>
+            ) : (
+              <p className={styles.placeholder}>No reasoning provided.</p>
             )}
-          </>
+          </div>
         ) : (
-          <p className={styles.placeholder}>No recommendation generated yet.</p>
+          <div className={styles.recommendationEmpty}>
+            <p className={styles.placeholder}>
+              No recommendation generated yet. Run validation first, then generate an AI
+              recommendation based on extracted fields and validation results.
+            </p>
+          </div>
+        )}
+
+        {generateMutation.isError && (
+          <p className={styles.recommendationError} role="alert">
+            Failed to generate recommendation. Please try again.
+          </p>
         )}
       </section>
 
