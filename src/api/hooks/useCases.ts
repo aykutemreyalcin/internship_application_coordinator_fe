@@ -1,18 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import { fetchCase, fetchCases, isApiError } from '../api'
+import { fetchCases } from '../cases'
+import { isApiError } from '../client'
+import { caseKeys } from '../queryKeys'
 
 export function useCaseList() {
   return useQuery({
-    queryKey: ['cases'],
+    queryKey: caseKeys.all,
     queryFn: () => fetchCases({ page: 0, size: 20 }),
-  })
-}
-
-export function useCase(caseId: string | undefined) {
-  return useQuery({
-    queryKey: ['cases', caseId],
-    queryFn: () => fetchCase(caseId!),
-    enabled: Boolean(caseId),
   })
 }
 

@@ -7,7 +7,7 @@ import {
   buildClarificationDraft,
   buildSupervisorVerificationDraft,
   createMockCase,
-  extractMockCase,
+  startMockExtraction,
   generateMockRecommendation,
   getMockAuditLog,
   getMockCase,
@@ -76,7 +76,7 @@ export const handlers = [
   }),
 
   http.post('*/api/cases/:id/extract', ({ params, request }) => {
-    const applicationCase = extractMockCase(String(params.id))
+    const applicationCase = startMockExtraction(String(params.id))
     if (!applicationCase) {
       return apiError(404, 'Not Found', 'Case not found', casePath(request))
     }
