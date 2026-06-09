@@ -9,6 +9,7 @@ export {
   fetchCases,
   fetchValidation,
   generateClarification,
+  sendClarification,
   generateRecommendation,
   generateSupervisorVerification,
   getCase,

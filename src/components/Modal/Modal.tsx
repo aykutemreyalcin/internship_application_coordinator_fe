@@ -8,9 +8,17 @@ type ModalProps = {
   title: string
   children: ReactNode
   footer?: ReactNode
+  dialogClassName?: string
 }
 
-export function Modal({ open, onClose, title, children, footer }: ModalProps) {
+export function Modal({
+  open,
+  onClose,
+  title,
+  children,
+  footer,
+  dialogClassName,
+}: ModalProps) {
   const titleId = useId()
 
   useEffect(() => {
@@ -41,7 +49,7 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div
-        className={styles.dialog}
+        className={[styles.dialog, dialogClassName].filter(Boolean).join(' ')}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}

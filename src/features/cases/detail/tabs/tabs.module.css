@@ -277,3 +277,30 @@
 .placeholder code {
   font-size: 0.75em;
 }
+
+.clarificationSection {
+  padding: 0.875rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-muted);
+}
+
+.clarificationHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.clarificationHeader .sectionLabel {
+  margin: 0 0 0.25rem;
+}
+
+.clarificationHint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  max-width: 28rem;
+}
