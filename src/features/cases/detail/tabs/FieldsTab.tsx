@@ -1,6 +1,7 @@
+import { getMutationErrorMessage } from '../../../../api/hooks/caseQueryUtils'
 import { useExtractCase } from '../../../../api/hooks/useExtractCase'
 import type { Case } from '../../../../api/types'
-import { Button } from '../../../../components'
+import { Button, useToast } from '../../../../components'
 import styles from './tabs.module.css'
 
 interface FieldsTabProps {
@@ -22,9 +23,21 @@ function formatDate(value: string | null): string | null {
 }
 
 export function FieldsTab({ caseData }: FieldsTabProps) {
+  const { showToast } = useToast()
   const extractMutation = useExtractCase(caseData.caseId)
   const isExtracting = caseData.status === 'EXTRACTING'
   const isExtractDisabled = isExtracting || extractMutation.isPending
+
+  function handleReExtract() {
+    extractMutation.mutate(undefined, {
+      onSuccess: () => {
+        showToast('Extraction started', 'success')
+      },
+      onError: (mutationError) => {
+        showToast(getMutationErrorMessage(mutationError, 'Failed to start extraction'), 'error')
+      },
+    })
+  }
 
   const fields: FieldRow[] = [
     { label: 'Student Name', value: caseData.studentName },
@@ -59,17 +72,11 @@ export function FieldsTab({ caseData }: FieldsTabProps) {
           size="sm"
           loading={isExtractDisabled}
           disabled={isExtractDisabled}
-          onClick={() => extractMutation.mutate()}
+          onClick={handleReExtract}
         >
           {isExtracting ? 'Extracting…' : 'Re-extract'}
         </Button>
       </div>
-
-      {extractMutation.isError && (
-        <p className={styles.extractError} role="alert">
-          Failed to start extraction. Please try again.
-        </p>
-      )}
 
       <dl className={`${styles.fieldList} ${isExtracting ? styles.fieldListDisabled : ''}`}>
         {fields.map((field) => (

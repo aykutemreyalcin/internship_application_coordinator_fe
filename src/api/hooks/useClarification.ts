@@ -1,13 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { generateClarification, sendClarification } from '../cases'
 import type { ClarificationSendRequest } from '../cases'
-import { caseKeys } from '../queryKeys'
-
-function invalidateCaseQueries(queryClient: ReturnType<typeof useQueryClient>, caseId: string) {
-  void queryClient.invalidateQueries({ queryKey: caseKeys.detail(caseId) })
-  void queryClient.invalidateQueries({ queryKey: caseKeys.all })
-  void queryClient.invalidateQueries({ queryKey: caseKeys.audit(caseId) })
-}
+import { invalidateCaseQueries, syncCaseDetailCache } from './caseQueryUtils'
 
 export function useGenerateClarification(caseId: string) {
   const queryClient = useQueryClient()
@@ -15,7 +9,7 @@ export function useGenerateClarification(caseId: string) {
   return useMutation({
     mutationFn: () => generateClarification(caseId),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: caseKeys.audit(caseId) })
+      invalidateCaseQueries(queryClient, caseId, { detail: false, list: false, audit: true })
     },
   })
 }
@@ -26,8 +20,8 @@ export function useSendClarification(caseId: string) {
   return useMutation({
     mutationFn: (request: ClarificationSendRequest) => sendClarification(caseId, request),
     onSuccess: (updatedCase) => {
-      queryClient.setQueryData(caseKeys.detail(caseId), updatedCase)
-      invalidateCaseQueries(queryClient, caseId)
+      syncCaseDetailCache(queryClient, caseId, updatedCase)
+      invalidateCaseQueries(queryClient, caseId, { detail: false, audit: true })
     },
   })
 }
