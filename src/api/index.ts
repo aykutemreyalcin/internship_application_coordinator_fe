@@ -5,6 +5,7 @@ export {
   documentUrl,
   extractCase,
   fetchAuditLog,
+  fetchDocument,
   fetchCase,
   fetchCases,
   fetchValidation,
