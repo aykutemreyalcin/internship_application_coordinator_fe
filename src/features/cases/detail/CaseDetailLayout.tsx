@@ -1,4 +1,5 @@
 import { Tabs, type TabItem } from '../../../components/Tabs/Tabs'
+import { useCaseDetailEffects } from '../../../api/hooks/useCaseDetailEffects'
 import type { Case } from '../../../api/types'
 import { CaseSummaryPanel } from './CaseSummaryPanel'
 import { FieldsTab } from './tabs/FieldsTab'
@@ -12,6 +13,8 @@ interface CaseDetailLayoutProps {
 }
 
 export function CaseDetailLayout({ caseData }: CaseDetailLayoutProps) {
+  useCaseDetailEffects(caseData)
+
   const tabs: TabItem[] = [
     { id: 'fields', label: 'Fields', content: <FieldsTab caseData={caseData} /> },
     {
