@@ -3,9 +3,19 @@ import {
   useGenerateClarification,
   useSendClarification,
 } from '../../../../api/hooks/useClarification'
-import type { Case, ClarificationDraftResponse, Recommendation } from '../../../../api/types'
+import {
+  useGenerateSupervisorVerification,
+  useSendSupervisorVerification,
+} from '../../../../api/hooks/useSupervisorVerification'
+import type {
+  Case,
+  ClarificationDraftResponse,
+  Recommendation,
+  SupervisorVerificationDraftResponse,
+} from '../../../../api/types'
 import { Button, useToast } from '../../../../components'
 import { ClarificationEmailModal } from '../clarification/ClarificationEmailModal'
+import { SupervisorVerificationModal } from '../supervisor/SupervisorVerificationModal'
 import styles from './tabs.module.css'
 
 interface RecommendationDecisionTabProps {
@@ -23,15 +33,23 @@ export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTa
   const [clarificationOpen, setClarificationOpen] = useState(false)
   const [clarificationDraft, setClarificationDraft] =
     useState<ClarificationDraftResponse | null>(null)
+  const [supervisorOpen, setSupervisorOpen] = useState(false)
+  const [supervisorDraft, setSupervisorDraft] =
+    useState<SupervisorVerificationDraftResponse | null>(null)
 
-  const draftMutation = useGenerateClarification(caseData.caseId)
-  const sendMutation = useSendClarification(caseData.caseId)
+  const clarificationDraftMutation = useGenerateClarification(caseData.caseId)
+  const clarificationSendMutation = useSendClarification(caseData.caseId)
+  const supervisorDraftMutation = useGenerateSupervisorVerification(caseData.caseId)
+  const supervisorSendMutation = useSendSupervisorVerification(caseData.caseId)
 
   const hasRecommendation = caseData.recommendation !== null
-  const isClarificationBusy = draftMutation.isPending || sendMutation.isPending
+  const isClarificationBusy =
+    clarificationDraftMutation.isPending || clarificationSendMutation.isPending
+  const isSupervisorBusy =
+    supervisorDraftMutation.isPending || supervisorSendMutation.isPending
 
   function handleDraftClarification() {
-    draftMutation.mutate(undefined, {
+    clarificationDraftMutation.mutate(undefined, {
       onSuccess: (draft) => {
         setClarificationDraft(draft)
         setClarificationOpen(true)
@@ -43,7 +61,7 @@ export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTa
   }
 
   function handleSendClarification(payload: { subject: string; body: string }) {
-    sendMutation.mutate(payload, {
+    clarificationSendMutation.mutate(payload, {
       onSuccess: () => {
         setClarificationOpen(false)
         setClarificationDraft(null)
@@ -51,6 +69,31 @@ export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTa
       },
       onError: () => {
         showToast('Failed to send clarification email. Please try again.', 'error')
+      },
+    })
+  }
+
+  function handleDraftSupervisorVerification() {
+    supervisorDraftMutation.mutate(undefined, {
+      onSuccess: (draft) => {
+        setSupervisorDraft(draft)
+        setSupervisorOpen(true)
+      },
+      onError: () => {
+        showToast('Failed to generate supervisor verification draft. Please try again.', 'error')
+      },
+    })
+  }
+
+  function handleSendSupervisorVerification(payload: { subject: string; body: string }) {
+    supervisorSendMutation.mutate(payload, {
+      onSuccess: () => {
+        setSupervisorOpen(false)
+        setSupervisorDraft(null)
+        showToast('Supervisor verification email sent', 'success')
+      },
+      onError: () => {
+        showToast('Failed to send supervisor verification email. Please try again.', 'error')
       },
     })
   }
@@ -108,17 +151,52 @@ export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTa
         </div>
       </section>
 
+      <section className={styles.clarificationSection}>
+        <div className={styles.clarificationHeader}>
+          <div>
+            <h4 className={styles.sectionLabel}>Supervisor Verification Email</h4>
+            <p className={styles.clarificationHint}>
+              Generate an AI draft email to verify the company supervisor&apos;s internship
+              arrangement.
+            </p>
+          </div>
+          <Button
+            variant="secondary"
+            size="sm"
+            loading={isSupervisorBusy}
+            disabled={isSupervisorBusy}
+            onClick={handleDraftSupervisorVerification}
+          >
+            Draft supervisor verification
+          </Button>
+        </div>
+      </section>
+
       {clarificationDraft && (
         <ClarificationEmailModal
           open={clarificationOpen}
           draft={clarificationDraft}
           onClose={() => {
-            if (!sendMutation.isPending) {
+            if (!clarificationSendMutation.isPending) {
               setClarificationOpen(false)
             }
           }}
           onSend={handleSendClarification}
-          isSending={sendMutation.isPending}
+          isSending={clarificationSendMutation.isPending}
+        />
+      )}
+
+      {supervisorDraft && (
+        <SupervisorVerificationModal
+          open={supervisorOpen}
+          draft={supervisorDraft}
+          onClose={() => {
+            if (!supervisorSendMutation.isPending) {
+              setSupervisorOpen(false)
+            }
+          }}
+          onSend={handleSendSupervisorVerification}
+          isSending={supervisorSendMutation.isPending}
         />
       )}
     </div>

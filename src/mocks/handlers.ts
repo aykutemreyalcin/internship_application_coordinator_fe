@@ -7,6 +7,7 @@ import {
   buildClarificationDraft,
   sendMockClarificationEmail,
   buildSupervisorVerificationDraft,
+  sendMockSupervisorVerificationEmail,
   createMockCase,
   startMockExtraction,
   generateMockRecommendation,
@@ -159,6 +160,24 @@ export const handlers = [
       return apiError(404, 'Not Found', 'Case not found', casePath(request))
     }
     return HttpResponse.json(draft)
+  }),
+
+  http.post('*/api/cases/:id/supervisor-verification/send', async ({ params, request }) => {
+    const body = (await request.json()) as { subject?: string; body?: string }
+    if (!body.subject?.trim() || !body.body?.trim()) {
+      return apiError(400, 'Bad Request', 'Subject and body are required', casePath(request))
+    }
+
+    const applicationCase = sendMockSupervisorVerificationEmail(String(params.id), {
+      subject: body.subject.trim(),
+      body: body.body.trim(),
+    })
+
+    if (!applicationCase) {
+      return apiError(404, 'Not Found', 'Case not found', casePath(request))
+    }
+
+    return HttpResponse.json(applicationCase)
   }),
 
   http.get('*/api/cases/:id/audit', ({ params, request }) => {

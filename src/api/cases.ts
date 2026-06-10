@@ -83,6 +83,22 @@ export async function generateSupervisorVerification(
   return data
 }
 
+export type SupervisorVerificationSendRequest = {
+  subject: string
+  body: string
+}
+
+export async function sendSupervisorVerification(
+  caseId: string,
+  request: SupervisorVerificationSendRequest,
+): Promise<Case> {
+  const { data } = await api.post<Case>(
+    `/cases/${caseId}/supervisor-verification/send`,
+    request,
+  )
+  return data
+}
+
 export async function fetchAuditLog(caseId: string): Promise<AuditLogEntry[]> {
   const { data } = await api.get<AuditLogEntry[]>(`/cases/${caseId}/audit`)
   return data

@@ -12,6 +12,7 @@ export {
   sendClarification,
   generateRecommendation,
   generateSupervisorVerification,
+  sendSupervisorVerification,
   getCase,
 } from './cases'
 export type {
