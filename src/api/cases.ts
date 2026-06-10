@@ -1,4 +1,4 @@
-import { api } from './client'
+import { api, ApiError, isApiErrorResponse } from './client'
 import type {
   AuditLogEntry,
   Case,
@@ -107,4 +107,22 @@ export async function fetchAuditLog(caseId: string): Promise<AuditLogEntry[]> {
 export function documentUrl(caseId: string, documentId: string): string {
   const baseUrl = api.defaults.baseURL?.replace(/\/$/, '') ?? ''
   return `${baseUrl}/cases/${caseId}/documents/${documentId}`
+}
+
+export async function fetchDocument(caseId: string, documentId: string): Promise<Blob> {
+  const { data, headers } = await api.get<Blob>(`/cases/${caseId}/documents/${documentId}`, {
+    responseType: 'blob',
+    headers: { Accept: 'application/pdf' },
+  })
+
+  const contentType = (headers['content-type'] as string | undefined) ?? data.type
+  if (contentType.includes('application/json')) {
+    const text = await data.text()
+    const parsed = JSON.parse(text) as unknown
+    if (isApiErrorResponse(parsed)) {
+      throw new ApiError(parsed)
+    }
+  }
+
+  return data
 }
