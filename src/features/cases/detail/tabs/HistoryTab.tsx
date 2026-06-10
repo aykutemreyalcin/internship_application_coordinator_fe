@@ -1,13 +1,88 @@
+import { getAuditQueryErrorMessage, useAuditLog } from '../../../../api/hooks/useAuditLog'
+import type { AuditLogEntry } from '../../../../api/types'
+import { Button, EmptyState, LoadingBlock } from '../../../../components'
+import {
+  formatAuditAction,
+  formatAuditTimestamp,
+  getAuditActorType,
+  sortAuditEntriesChronologically,
+  type AuditActorType,
+} from './auditUtils'
 import styles from './tabs.module.css'
 
-export function HistoryTab() {
+interface HistoryTabProps {
+  caseId: string
+}
+
+const ACTOR_TYPE_LABELS: Record<AuditActorType, string> = {
+  COORDINATOR: 'Coordinator',
+  SYSTEM: 'System',
+  AGENT: 'Agent',
+}
+
+function AuditTimelineItem({ entry }: { entry: AuditLogEntry }) {
+  const actorType = getAuditActorType(entry.actor)
+  const actorLabel =
+    actorType === 'AGENT' ? entry.actor : ACTOR_TYPE_LABELS[actorType]
+
+  return (
+    <li className={styles.timelineItem}>
+      <div className={`${styles.timelineMarker} ${styles[`timelineMarker${actorType}`]}`} />
+      <article className={`${styles.timelineCard} ${styles[`timelineCard${actorType}`]}`}>
+        <header className={styles.timelineCardHeader}>
+          <span className={`${styles.actorBadge} ${styles[`actorBadge${actorType}`]}`}>
+            {actorLabel}
+          </span>
+          <time className={styles.timelineTime} dateTime={entry.timestamp}>
+            {formatAuditTimestamp(entry.timestamp)}
+          </time>
+        </header>
+        <p className={styles.timelineAction}>{formatAuditAction(entry.action)}</p>
+        <p className={styles.timelineDetail}>{entry.detail}</p>
+      </article>
+    </li>
+  )
+}
+
+export function HistoryTab({ caseId }: HistoryTabProps) {
+  const { data, isLoading, isError, error, refetch, isFetching } = useAuditLog(caseId)
+
+  if (isLoading) {
+    return <LoadingBlock label="Loading case history…" />
+  }
+
+  if (isError) {
+    return (
+      <EmptyState
+        title="Failed to load case history"
+        description={getAuditQueryErrorMessage(error)}
+        action={
+          <Button variant="primary" onClick={() => refetch()} loading={isFetching}>
+            Try again
+          </Button>
+        }
+      />
+    )
+  }
+
+  const entries = sortAuditEntriesChronologically(data ?? [])
+
   return (
     <div className={styles.tabContent}>
       <h3 className={styles.tabHeading}>Case History</h3>
-      <p className={styles.placeholder}>
-        Audit timeline will load from <code>GET /cases/&#123;id&#125;/audit</code> in a
-        follow-up task.
+      <p className={styles.timelineIntro}>
+        Chronological audit trail of system, agent, and coordinator actions.
       </p>
+
+      {entries.length === 0 ? (
+        <p className={styles.placeholder}>No audit events recorded for this case yet.</p>
+      ) : (
+        <ol className={styles.timeline}>
+          {entries.map((entry) => (
+            <AuditTimelineItem key={entry.id} entry={entry} />
+          ))}
+        </ol>
+      )}
     </div>
   )
 }

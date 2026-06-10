@@ -24,7 +24,7 @@ export function CaseDetailLayout({ caseData }: CaseDetailLayoutProps) {
       label: 'Recommendation / Decision',
       content: <RecommendationDecisionTab caseData={caseData} />,
     },
-    { id: 'history', label: 'History', content: <HistoryTab /> },
+    { id: 'history', label: 'History', content: <HistoryTab caseId={caseData.caseId} /> },
   ]
 
   return (
