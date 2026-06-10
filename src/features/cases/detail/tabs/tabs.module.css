@@ -304,3 +304,138 @@
   line-height: 1.5;
   max-width: 28rem;
 }
+
+.timelineIntro {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.timelineItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.25rem 1fr;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+}
+
+.timelineItem:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 0.4375rem;
+  top: 1.125rem;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-border);
+}
+
+.timelineMarker {
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-top: 0.375rem;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  background: var(--color-surface);
+  z-index: 1;
+}
+
+.timelineMarkerCOORDINATOR {
+  border-color: rgb(59 130 246 / 0.6);
+  background: rgb(59 130 246 / 0.2);
+}
+
+.timelineMarkerSYSTEM {
+  border-color: rgb(161 161 170 / 0.6);
+  background: rgb(161 161 170 / 0.2);
+}
+
+.timelineMarkerAGENT {
+  border-color: rgb(168 85 247 / 0.6);
+  background: rgb(168 85 247 / 0.2);
+}
+
+.timelineCard {
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-muted);
+}
+
+.timelineCardCOORDINATOR {
+  border-color: rgb(59 130 246 / 0.25);
+  background: rgb(59 130 246 / 0.06);
+}
+
+.timelineCardSYSTEM {
+  border-color: rgb(161 161 170 / 0.25);
+  background: rgb(161 161 170 / 0.06);
+}
+
+.timelineCardAGENT {
+  border-color: rgb(168 85 247 / 0.25);
+  background: rgb(168 85 247 / 0.06);
+}
+
+.timelineCardHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.375rem;
+}
+
+.actorBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.actorBadgeCOORDINATOR {
+  background: rgb(59 130 246 / 0.18);
+  color: #93c5fd;
+}
+
+.actorBadgeSYSTEM {
+  background: rgb(161 161 170 / 0.18);
+  color: #d4d4d8;
+}
+
+.actorBadgeAGENT {
+  background: rgb(168 85 247 / 0.18);
+  color: #d8b4fe;
+}
+
+.timelineTime {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.timelineAction {
+  margin: 0 0 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.timelineDetail {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
