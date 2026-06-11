@@ -47,6 +47,37 @@ VITE_USE_MSW=true
 
 Restart `npm run dev`. The header shows **Mock API**.
 
+### Verify detail endpoints (FE-INT-02)
+
+With the backend running and `.env` pointing at it (`VITE_USE_MSW=false`):
+
+```bash
+npm run verify:detail-api
+```
+
+This checks detail, validation, audit, PDF, extract, recommendation, clarification, supervisor, and decision endpoints. Gemini-powered steps need `VERTEX_AI_ENABLED=true` on the backend; otherwise those checks may fail with an explanatory API message while read-only checks still pass.
+
+Read-only mode (no mutations):
+
+```bash
+SKIP_MUTATIONS=1 npm run verify:detail-api
+```
+
+Target a specific case:
+
+```bash
+CASE_ID=<uuid> npm run verify:detail-api
+```
+
+**Manual UI checklist (Alvin detail flows):**
+
+1. Open a case from the list → PDF preview loads
+2. **Fields** → Re-extract (sync on real backend; fields + validation refresh)
+3. **Validation** → completeness and rules sections
+4. **Recommendation / Decision** → generate recommendation, apply decision
+5. Draft clarification / supervisor emails → confirm send refreshes case (SMTP send is backend phase 2)
+6. **History** → audit timeline updates after actions
+
 ## Scripts
 
 | Command | Description |
@@ -56,6 +87,7 @@ Restart `npm run dev`. The header shows **Mock API**.
 | `npm run preview` | Preview production build |
 | `npm run lint` | Run ESLint |
 | `npm run format` | Format with Prettier |
+| `npm run verify:detail-api` | Verify detail API endpoints against backend |
 
 ## Branches
 

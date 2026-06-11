@@ -9,7 +9,11 @@ export function useExtractCase(caseId: string) {
     mutationFn: () => extractCase(caseId),
     onSuccess: (updatedCase) => {
       syncCaseDetailCache(queryClient, caseId, updatedCase)
-      invalidateCaseQueries(queryClient, caseId, { detail: false, audit: true })
+      invalidateCaseQueries(queryClient, caseId, {
+        detail: false,
+        audit: true,
+        validation: true,
+      })
     },
   })
 }
