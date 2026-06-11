@@ -1,4 +1,5 @@
 import { APP_DISPLAY_NAME, COORDINATOR_ROLE } from '../config/app'
+import { getApiModeLabel } from '../config/env'
 import styles from './Header.module.css'
 
 type HeaderProps = {
@@ -30,9 +31,14 @@ export function Header({ onMenuToggle }: HeaderProps) {
         <h1 className={styles.title}>{APP_DISPLAY_NAME}</h1>
       </div>
 
-      <div className={styles.role} title="Signed-in role (placeholder)">
-        <span className={styles.roleDot} aria-hidden="true" />
-        <span className={styles.roleLabel}>{COORDINATOR_ROLE}</span>
+      <div className={styles.meta}>
+        <span className={styles.apiMode} title="API connection mode">
+          {getApiModeLabel()}
+        </span>
+        <div className={styles.role} title="Signed-in role (placeholder)">
+          <span className={styles.roleDot} aria-hidden="true" />
+          <span className={styles.roleLabel}>{COORDINATOR_ROLE}</span>
+        </div>
       </div>
     </header>
   )

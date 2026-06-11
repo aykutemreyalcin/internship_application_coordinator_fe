@@ -1,5 +1,6 @@
 import { EmptyState, LoadingBlock } from '../components'
 import { getCaseQueryErrorMessage, useCaseList } from '../api/hooks/useCases'
+import { getApiModeLabel } from '../config/env'
 import { CaseListTable } from '../features/cases/list/CaseListTable'
 import styles from './Page.module.css'
 
@@ -31,7 +32,7 @@ export function CaseListPage() {
           <CaseListTable cases={data.content} />
           <p className={styles.hint}>
             Showing {data.content.length} of {data.totalElements} cases
-            {import.meta.env.VITE_USE_MSW === 'true' ? ' (mock API)' : ''}.
+            ({getApiModeLabel().toLowerCase()}).
           </p>
         </>
       ) : null}

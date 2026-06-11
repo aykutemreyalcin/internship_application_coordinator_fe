@@ -1,3 +1,4 @@
+import { isMockApiEnabled } from '../config/env'
 import { api, ApiError, isApiErrorResponse } from './client'
 import type {
   AuditLogEntry,
@@ -70,7 +71,10 @@ export async function sendClarification(
   caseId: string,
   request: ClarificationSendRequest,
 ): Promise<Case> {
-  const { data } = await api.post<Case>(`/cases/${caseId}/clarification/send`, request)
+  const path = isMockApiEnabled()
+    ? `/cases/${caseId}/clarification/send`
+    : `/cases/${caseId}/clarification`
+  const { data } = await api.post<Case>(path, request)
   return data
 }
 
@@ -92,10 +96,10 @@ export async function sendSupervisorVerification(
   caseId: string,
   request: SupervisorVerificationSendRequest,
 ): Promise<Case> {
-  const { data } = await api.post<Case>(
-    `/cases/${caseId}/supervisor-verification/send`,
-    request,
-  )
+  const path = isMockApiEnabled()
+    ? `/cases/${caseId}/supervisor-verification/send`
+    : `/cases/${caseId}/supervisor-verification`
+  const { data } = await api.post<Case>(path, request)
   return data
 }
 

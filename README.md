@@ -17,7 +17,35 @@ cp .env.example .env
 npm run dev            # http://localhost:5173
 ```
 
-API base URL: `http://localhost:8080/api` (see `PROJECT_OVERVIEW.md`).
+### Connect to the real backend (default)
+
+1. Start the backend on `http://localhost:8080` (see `PROJECT_OVERVIEW.md`).
+2. Copy `.env.example` → `.env` (MSW is **off** by default).
+3. Confirm Aykut enabled CORS for `http://localhost:5173` (BE-17).
+4. Open the app — the header shows **Backend API**.
+
+`.env` defaults:
+
+```env
+VITE_API_BASE_URL=http://localhost:8080/api
+VITE_USE_MSW=false
+```
+
+If CORS is not configured yet, use the Vite dev proxy instead:
+
+```env
+VITE_API_BASE_URL=/api
+```
+
+`vite.config.ts` proxies `/api` → `http://localhost:8080`.
+
+### Use mocks without the backend
+
+```env
+VITE_USE_MSW=true
+```
+
+Restart `npm run dev`. The header shows **Mock API**.
 
 ## Scripts
 

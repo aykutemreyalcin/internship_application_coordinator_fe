@@ -1,12 +1,6 @@
 import axios, { AxiosError, isAxiosError, type AxiosInstance } from 'axios'
+import { getApiBaseUrl } from '../config/env'
 import type { ApiErrorResponse } from './types'
-
-const DEFAULT_BASE_URL = 'http://localhost:8080/api'
-
-function resolveBaseUrl(): string {
-  const configured = import.meta.env.VITE_API_BASE_URL?.trim()
-  return configured && configured.length > 0 ? configured : DEFAULT_BASE_URL
-}
 
 export function isApiErrorResponse(value: unknown): value is ApiErrorResponse {
   if (typeof value !== 'object' || value === null) {
@@ -85,7 +79,7 @@ function normalizeError(error: unknown): Promise<never> {
 }
 
 export const apiClient: AxiosInstance = axios.create({
-  baseURL: resolveBaseUrl(),
+  baseURL: getApiBaseUrl(),
   headers: {
     Accept: 'application/json',
   },
