@@ -1,0 +1,90 @@
+.uploadZone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 12rem;
+  padding: 2rem 1.5rem;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-muted);
+  color: var(--color-text-secondary);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.uploadZone:hover,
+.uploadZoneActive {
+  border-color: rgb(59 130 246 / 0.45);
+  background: rgb(59 130 246 / 0.06);
+}
+
+.uploadZoneDisabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.uploadIcon {
+  width: 2rem;
+  height: 2rem;
+  color: var(--color-text-muted);
+}
+
+.uploadTitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.uploadHint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.fileInput {
+  display: none;
+}
+
+.selectedFile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.fileMeta {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text);
+}
+
+.fileSize {
+  margin: 0.125rem 0 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.validationError {
+  margin: 0.75rem 0 0;
+  font-size: 0.8125rem;
+  color: #fca5a5;
+}

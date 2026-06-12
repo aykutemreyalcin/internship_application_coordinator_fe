@@ -78,6 +78,10 @@ CASE_ID=<uuid> npm run verify:detail-api
 5. Draft clarification / supervisor emails → confirm send refreshes case (SMTP send is backend phase 2)
 6. **History** → audit timeline updates after actions
 
+### End-to-end demo (FE-INT-03)
+
+Full recording script (upload → extract → validate → recommend → decide → audit): [docs/DEMO_SCRIPT.md](./docs/DEMO_SCRIPT.md)
+
 ## Scripts
 
 | Command | Description |
