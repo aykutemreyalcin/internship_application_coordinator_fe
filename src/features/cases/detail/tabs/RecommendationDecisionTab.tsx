@@ -49,6 +49,7 @@ export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTa
     useState<SupervisorVerificationDraftResponse | null>(null)
   const [decisionNote, setDecisionNote] = useState('')
   const [approveConfirmOpen, setApproveConfirmOpen] = useState(false)
+  const [rejectConfirmOpen, setRejectConfirmOpen] = useState(false)
 
   const recommendationMutation = useGenerateRecommendation(caseData.caseId)
   const decisionMutation = useApplyDecision(caseData.caseId)
@@ -94,6 +95,7 @@ export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTa
         onSuccess: () => {
           setDecisionNote('')
           setApproveConfirmOpen(false)
+          setRejectConfirmOpen(false)
           showToast(`Decision recorded: ${RECOMMENDATION_LABELS[decision]}`, 'success')
         },
         onError: (mutationError) => {
@@ -120,11 +122,11 @@ export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTa
 
   function handleSendClarification(payload: { subject: string; body: string }) {
     clarificationSendMutation.mutate(payload, {
-      onSuccess: () => {
-        setClarificationOpen(false)
-        setClarificationDraft(null)
-        showToast('Clarification email sent to student', 'success')
-      },
+        onSuccess: () => {
+          setClarificationOpen(false)
+          setClarificationDraft(null)
+          showToast('Clarification recorded — check History for the audit entry', 'success')
+        },
       onError: (mutationError) => {
         showToast(
           getMutationErrorMessage(mutationError, 'Failed to send clarification email'),
@@ -151,11 +153,11 @@ export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTa
 
   function handleSendSupervisorVerification(payload: { subject: string; body: string }) {
     supervisorSendMutation.mutate(payload, {
-      onSuccess: () => {
-        setSupervisorOpen(false)
-        setSupervisorDraft(null)
-        showToast('Supervisor verification email sent', 'success')
-      },
+        onSuccess: () => {
+          setSupervisorOpen(false)
+          setSupervisorDraft(null)
+          showToast('Supervisor verification recorded — check History for the audit entry', 'success')
+        },
       onError: (mutationError) => {
         showToast(
           getMutationErrorMessage(mutationError, 'Failed to send supervisor verification email'),
@@ -209,6 +211,12 @@ export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTa
           </p>
         ) : (
           <>
+            {hasRecommendation ? (
+              <p className={styles.recommendationHint}>
+                AI recommends:{' '}
+                <strong>{RECOMMENDATION_LABELS[caseData.recommendation!]}</strong>
+              </p>
+            ) : null}
             <label className={styles.decisionNoteLabel} htmlFor="decision-note">
               Coordinator note (optional)
             </label>
@@ -236,7 +244,7 @@ export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTa
                 size="sm"
                 loading={isDecisionBusy}
                 disabled={isActionBusy}
-                onClick={() => submitDecision('REJECT')}
+                onClick={() => setRejectConfirmOpen(true)}
               >
                 Reject
               </Button>
@@ -326,6 +334,36 @@ export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTa
       >
         <p className={styles.decisionConfirmText}>
           Approve this internship application? This records your final decision and updates the
+          case status.
+        </p>
+      </Modal>
+
+      <Modal
+        open={rejectConfirmOpen}
+        onClose={() => !isDecisionBusy && setRejectConfirmOpen(false)}
+        title="Confirm rejection"
+        footer={
+          <div className={styles.decisionModalFooter}>
+            <Button
+              variant="ghost"
+              disabled={isDecisionBusy}
+              onClick={() => setRejectConfirmOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              loading={isDecisionBusy}
+              disabled={isDecisionBusy}
+              onClick={() => submitDecision('REJECT')}
+            >
+              Confirm reject
+            </Button>
+          </div>
+        }
+      >
+        <p className={styles.decisionConfirmText}>
+          Reject this internship application? This records your final decision and updates the
           case status.
         </p>
       </Modal>

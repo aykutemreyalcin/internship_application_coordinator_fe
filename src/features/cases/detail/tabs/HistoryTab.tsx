@@ -69,10 +69,36 @@ export function HistoryTab({ caseId }: HistoryTabProps) {
 
   return (
     <div className={styles.tabContent}>
-      <h3 className={styles.tabHeading}>Case History</h3>
-      <p className={styles.timelineIntro}>
-        Chronological audit trail of system, agent, and coordinator actions.
-      </p>
+      <div className={styles.timelineHeader}>
+        <div>
+          <h3 className={styles.tabHeading}>Case History</h3>
+          <p className={styles.timelineIntro}>
+            Chronological audit trail of system, agent, and coordinator actions.
+          </p>
+        </div>
+        {entries.length > 0 ? (
+          <span className={styles.timelineCount}>
+            {entries.length} {entries.length === 1 ? 'event' : 'events'}
+          </span>
+        ) : null}
+      </div>
+
+      {entries.length > 0 ? (
+        <ul className={styles.timelineLegend} aria-label="Actor legend">
+          <li>
+            <span className={`${styles.legendSwatch} ${styles.legendSwatchCOORDINATOR}`} />
+            Coordinator
+          </li>
+          <li>
+            <span className={`${styles.legendSwatch} ${styles.legendSwatchSYSTEM}`} />
+            System
+          </li>
+          <li>
+            <span className={`${styles.legendSwatch} ${styles.legendSwatchAGENT}`} />
+            Agent
+          </li>
+        </ul>
+      ) : null}
 
       {entries.length === 0 ? (
         <p className={styles.placeholder}>No audit events recorded for this case yet.</p>

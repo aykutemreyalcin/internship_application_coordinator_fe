@@ -26,6 +26,20 @@ export function formatAuditTimestamp(value: string): string {
   })
 }
 
+const AUDIT_ACTION_LABELS: Record<string, string> = {
+  CASE_CREATED: 'Case created',
+  EXTRACTION_STARTED: 'Extraction started',
+  EXTRACTION_COMPLETED: 'Extraction completed',
+  VALIDATION_COMPLETED: 'Validation completed',
+  VALIDATION_FAILED: 'Validation failed',
+  RECOMMENDATION_GENERATED: 'Recommendation generated',
+  DECISION_APPLIED: 'Coordinator decision applied',
+  CLARIFICATION_DRAFTED: 'Clarification email drafted',
+  CLARIFICATION_SENT: 'Clarification email sent',
+  SUPERVISOR_VERIFICATION_DRAFTED: 'Supervisor verification drafted',
+  SUPERVISOR_VERIFICATION_SENT: 'Supervisor verification sent',
+}
+
 export function formatAuditAction(action: string): string {
-  return action.replaceAll('_', ' ')
+  return AUDIT_ACTION_LABELS[action] ?? action.replaceAll('_', ' ')
 }

@@ -82,6 +82,8 @@ CASE_ID=<uuid> npm run verify:detail-api
 
 Full recording script (upload → extract → validate → recommend → decide → audit): [docs/DEMO_SCRIPT.md](./docs/DEMO_SCRIPT.md)
 
+Detail-side walkthrough for Alvin (decision panel, email modals, audit timeline): see **FE-INT-04** section in [docs/DEMO_SCRIPT.md](./docs/DEMO_SCRIPT.md).
+
 ## Scripts
 
 | Command | Description |
