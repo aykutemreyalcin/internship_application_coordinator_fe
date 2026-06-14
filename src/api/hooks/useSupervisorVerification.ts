@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { isMockApiEnabled } from '../../config/env'
 import {
   generateSupervisorVerification,
   sendSupervisorVerification,
@@ -12,7 +13,12 @@ export function useGenerateSupervisorVerification(caseId: string) {
   return useMutation({
     mutationFn: () => generateSupervisorVerification(caseId),
     onSuccess: () => {
-      invalidateCaseQueries(queryClient, caseId, { detail: false, list: false, audit: true })
+      const refreshDetail = !isMockApiEnabled()
+      invalidateCaseQueries(queryClient, caseId, {
+        detail: refreshDetail,
+        list: refreshDetail,
+        audit: true,
+      })
     },
   })
 }

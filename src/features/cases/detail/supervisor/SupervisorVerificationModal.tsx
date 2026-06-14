@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { SupervisorVerificationDraftResponse } from '../../../../api/types'
+import { isMockApiEnabled } from '../../../../config/env'
 import { Button, Modal } from '../../../../components'
 import styles from './SupervisorVerificationModal.module.css'
 
@@ -25,6 +26,8 @@ function SupervisorVerificationModalContent({
   const [subject, setSubject] = useState(draft.subject)
   const [body, setBody] = useState(draft.body)
   const canSend = subject.trim().length > 0 && body.trim().length > 0
+  const isMockMode = isMockApiEnabled()
+  const confirmLabel = isMockMode ? 'Send email' : 'Confirm and record'
 
   return (
     <Modal
@@ -43,7 +46,7 @@ function SupervisorVerificationModalContent({
             disabled={isSending || !canSend}
             onClick={() => onSend({ subject: subject.trim(), body: body.trim() })}
           >
-            Send email
+            {confirmLabel}
           </Button>
         </div>
       }
@@ -52,6 +55,13 @@ function SupervisorVerificationModalContent({
         <p className={styles.recipient}>
           To: <strong>{draft.supervisorName}</strong> ({draft.supervisorEmail})
         </p>
+
+        {!isMockMode ? (
+          <p className={styles.phaseNote}>
+            Review the AI draft, edit if needed, then confirm. The action is recorded in the
+            audit log; SMTP delivery is backend phase 2.
+          </p>
+        ) : null}
 
         <label className={styles.label} htmlFor="supervisor-subject">
           Subject

@@ -125,3 +125,68 @@ Note: Email **send** is mock-only until backend SMTP (phase 2). On real API, dra
 - [ ] Coordinator decision applied
 - [ ] Audit timeline shows full history
 - [ ] No page reloads or broken navigation mid-flow
+
+---
+
+## Detail walkthrough — Alvin (FE-INT-04)
+
+~5 minutes focused on the case detail tabs. Use after Nizamettin hands off from upload (Path A) or open a sample case directly (Path B).
+
+### Sample cases for detail recording
+
+| Scenario | Case | ID | Tab focus |
+|----------|------|-----|-----------|
+| Approve happy path | Jan Kowalski | `11111111-1111-4111-8111-111111111101` | Decision panel → Approve confirm |
+| Clarification email | Tomasz Lewandowski | `22222222-2222-4222-8222-222222222201` | Draft clarification modal |
+| Reject (rule violation) | Piotr Zajac | `33333333-3333-4333-8333-333333333301` | Recommendation badge + Reject confirm |
+| CLARIFY decision | Agnieszka Wojcik | `44444444-4444-4444-8444-444444444401` | AI recommends CLARIFY → Request clarification |
+| Supervisor email | Maria Wisniewska | `11111111-1111-4111-8111-111111111102` | Draft supervisor verification modal |
+| Rich audit timeline | Jan Kowalski | `11111111-1111-4111-8111-111111111101` | History tab legend + events |
+
+Direct URLs: `http://localhost:5173/cases/<case-id>`
+
+### 1. Recommendation / Decision panel
+
+| Step | Action | Narration cue |
+|------|--------|---------------|
+| 1 | Open **Recommendation / Decision** tab | "The coordinator reviews the AI recommendation alongside their own decision." |
+| 2 | Click **Generate recommendation** (or show existing badge) | "The agent proposes approve, reject, or clarify with written reasoning." |
+| 3 | Point to **AI recommends** hint above decision buttons | "The coordinator can follow or override the recommendation." |
+| 4 | Add optional note in the textarea | "Context can be attached to the final decision." |
+| 5 | Click **Approve** → confirm in modal | "Approve requires explicit confirmation — human in the loop." |
+| 6 | Show locked state after decision | "Once recorded, the decision panel reflects the final status." |
+
+**Reject variant (Piotr Zajac):** Click **Reject** → **Confirm reject** modal → status becomes `REJECTED`.
+
+**Clarify variant (Agnieszka):** Click **Request clarification** (no modal) → status becomes `CLARIFICATION_REQUESTED`.
+
+### 2. Email modals
+
+| Step | Action | Narration cue |
+|------|--------|---------------|
+| 1 | Click **Draft clarification email** (Tomasz case) | "AI drafts a student clarification email from validation gaps." |
+| 2 | Review subject and body in modal; edit one line | "The coordinator can edit before confirming." |
+| 3 | Click **Send email** (mock) or **Confirm and record** (backend) | "The action is recorded; SMTP send is backend phase 2." |
+| 4 | Toast appears → switch to **History** | "Audit trail updates with the coordinator action." |
+
+**Supervisor variant:** **Draft supervisor verification** on a case with supervisor details → modal shows recipient name and email → confirm.
+
+### 3. Audit timeline (History tab)
+
+| Step | Action | Narration cue |
+|------|--------|---------------|
+| 1 | Open **History** tab | "Every action is logged in chronological order." |
+| 2 | Point to actor legend (Coordinator / System / Agent) | "Color coding distinguishes who performed each step." |
+| 3 | Walk through events top to bottom | "Upload, extraction, validation, recommendation, and coordinator decisions appear in sequence." |
+| 4 | Scroll to latest entry after a decision or email | "The newest event confirms the action we just took." |
+
+### Detail recording checklist (Alvin)
+
+- [ ] Recommendation badge and reason visible
+- [ ] Decision buttons show loading/disabled states during API calls
+- [ ] Approve and Reject use confirmation modals
+- [ ] Clarification modal opens with editable draft
+- [ ] Supervisor modal opens with recipient details
+- [ ] Backend mode shows phase-2 note in email modals
+- [ ] History tab shows event count, legend, and colored timeline cards
+- [ ] Toast prompts viewer to check History after email actions

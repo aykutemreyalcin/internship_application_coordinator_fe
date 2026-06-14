@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { isMockApiEnabled } from '../../config/env'
 import { generateClarification, sendClarification } from '../cases'
 import type { ClarificationSendRequest } from '../cases'
 import { invalidateCaseQueries, syncCaseDetailCache } from './caseQueryUtils'
@@ -9,7 +10,12 @@ export function useGenerateClarification(caseId: string) {
   return useMutation({
     mutationFn: () => generateClarification(caseId),
     onSuccess: () => {
-      invalidateCaseQueries(queryClient, caseId, { detail: false, list: false, audit: true })
+      const refreshDetail = !isMockApiEnabled()
+      invalidateCaseQueries(queryClient, caseId, {
+        detail: refreshDetail,
+        list: refreshDetail,
+        audit: true,
+      })
     },
   })
 }
