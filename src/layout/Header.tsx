@@ -1,5 +1,6 @@
-import { APP_DISPLAY_NAME, COORDINATOR_ROLE } from '../config/app'
+import { APP_DISPLAY_NAME } from '../config/app'
 import { getApiModeLabel } from '../config/env'
+import { useSession } from '../hooks/useSession'
 import styles from './Header.module.css'
 
 type HeaderProps = {
@@ -7,6 +8,8 @@ type HeaderProps = {
 }
 
 export function Header({ onMenuToggle }: HeaderProps) {
+  const session = useSession()
+
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
@@ -35,9 +38,13 @@ export function Header({ onMenuToggle }: HeaderProps) {
         <span className={styles.apiMode} title="API connection mode">
           {getApiModeLabel()}
         </span>
-        <div className={styles.role} title="Signed-in role (placeholder)">
+        <div
+          className={styles.role}
+          title={`Signed in as ${session.displayName} (${session.role})`}
+          aria-label={`Current role: ${session.displayName}`}
+        >
           <span className={styles.roleDot} aria-hidden="true" />
-          <span className={styles.roleLabel}>{COORDINATOR_ROLE}</span>
+          <span className={styles.roleLabel}>{session.displayName}</span>
         </div>
       </div>
     </header>
