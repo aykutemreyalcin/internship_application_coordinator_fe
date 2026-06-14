@@ -65,12 +65,15 @@ export function CaseDetailPage() {
   }
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${styles.pageEnter}`}>
       <header className={styles.header}>
         <Link to="/" className={styles.backLink}>
           ← Back to case list
         </Link>
-        <h1 className={styles.title}>Case detail</h1>
+        <div className={styles.headerText}>
+          <p className={styles.eyebrow}>Case detail</p>
+          <h1 className={styles.title}>{data.studentName ?? 'Unknown student'}</h1>
+        </div>
       </header>
       <CaseDetailLayout caseData={data} />
     </div>

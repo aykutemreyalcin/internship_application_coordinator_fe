@@ -36,7 +36,8 @@ export function Tabs({ tabs, defaultTabId }: TabsProps) {
         ))}
       </div>
       <div
-        className={styles.panel}
+        key={activeTab?.id}
+        className={`${styles.panel} ${styles.panelEnter}`}
         role="tabpanel"
         id={`panel-${activeTab?.id}`}
         aria-labelledby={`tab-${activeTab?.id}`}
