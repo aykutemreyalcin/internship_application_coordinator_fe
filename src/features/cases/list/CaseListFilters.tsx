@@ -8,6 +8,7 @@ const SEARCH_DEBOUNCE_MS = 300
 type CaseListFiltersProps = {
   status?: CaseStatus
   search: string
+  disabled?: boolean
   onStatusChange: (status?: CaseStatus) => void
   onSearchChange: (search: string) => void
 }
@@ -15,6 +16,7 @@ type CaseListFiltersProps = {
 export function CaseListFilters({
   status,
   search,
+  disabled = false,
   onStatusChange,
   onSearchChange,
 }: CaseListFiltersProps) {
@@ -37,6 +39,7 @@ export function CaseListFilters({
         <select
           className={styles.select}
           value={status ?? ''}
+          disabled={disabled}
           onChange={(event) => {
             const value = event.target.value
             onStatusChange(value ? (value as CaseStatus) : undefined)
@@ -58,6 +61,7 @@ export function CaseListFilters({
           className={styles.input}
           type="search"
           value={searchDraft}
+          disabled={disabled}
           onChange={(event) => setSearchDraft(event.target.value)}
           placeholder="Student or company…"
           aria-label="Search by student or company"

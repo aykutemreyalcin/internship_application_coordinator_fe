@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getMutationErrorMessage } from '../api/hooks/caseQueryUtils'
 import { useCreateCase } from '../api/hooks/useCreateCase'
-import { Button, useToast } from '../components'
+import { Button, EmptyState, Spinner, useToast } from '../components'
 import { validateUploadFile } from '../features/cases/upload/uploadUtils'
 import pageStyles from './Page.module.css'
 import styles from './NewApplicationPage.module.css'
@@ -29,11 +29,17 @@ export function NewApplicationPage() {
   const [isDragActive, setIsDragActive] = useState(false)
 
   const isUploading = createMutation.isPending
+  const uploadError =
+    createMutation.isError && selectedFile
+      ? getMutationErrorMessage(createMutation.error, 'Failed to upload application')
+      : null
 
   function handleFile(file: File | undefined) {
     if (!file) {
       return
     }
+
+    createMutation.reset()
 
     const error = validateUploadFile(file)
     if (error) {
@@ -83,6 +89,7 @@ export function NewApplicationPage() {
         className={`${styles.uploadZone} ${isDragActive ? styles.uploadZoneActive : ''} ${isUploading ? styles.uploadZoneDisabled : ''}`}
         role="button"
         tabIndex={0}
+        aria-busy={isUploading}
         onClick={() => !isUploading && fileInputRef.current?.click()}
         onKeyDown={(event) => {
           if ((event.key === 'Enter' || event.key === ' ') && !isUploading) {
@@ -114,6 +121,12 @@ export function NewApplicationPage() {
           }
         }}
       >
+        {isUploading ? (
+          <div className={styles.uploadOverlay} aria-live="polite">
+            <Spinner size="lg" label="Uploading application" />
+            <p className={styles.uploadOverlayLabel}>Uploading application…</p>
+          </div>
+        ) : null}
         <svg className={styles.uploadIcon} viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
             d="M12 16V4m0 0 4 4m-4-4-4 4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"
@@ -129,6 +142,36 @@ export function NewApplicationPage() {
 
       {validationError ? <p className={styles.validationError}>{validationError}</p> : null}
 
+      {uploadError ? (
+        <div className={styles.uploadError}>
+          <EmptyState
+            title="Upload failed"
+            description={uploadError}
+            icon={
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M12 8v5m0 3h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            }
+            action={
+              <Button
+                variant="primary"
+                loading={isUploading}
+                disabled={!selectedFile}
+                onClick={handleUpload}
+              >
+                Try again
+              </Button>
+            }
+          />
+        </div>
+      ) : null}
+
       {selectedFile ? (
         <div className={styles.selectedFile}>
           <div>
@@ -142,6 +185,7 @@ export function NewApplicationPage() {
             onClick={() => {
               setSelectedFile(null)
               setValidationError(null)
+              createMutation.reset()
               if (fileInputRef.current) {
                 fileInputRef.current.value = ''
               }

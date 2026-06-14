@@ -1,4 +1,5 @@
 .uploadZone {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,6 +27,29 @@
 .uploadZoneDisabled {
   opacity: 0.65;
   cursor: not-allowed;
+}
+
+.uploadOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  border-radius: inherit;
+  background: rgb(9 9 11 / 0.72);
+}
+
+.uploadOverlayLabel {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.uploadError {
+  margin-top: 1rem;
 }
 
 .uploadIcon {
