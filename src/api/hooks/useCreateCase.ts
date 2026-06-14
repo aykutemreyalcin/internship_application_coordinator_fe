@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createCase } from '../cases'
 import { caseKeys } from '../queryKeys'
@@ -5,9 +6,12 @@ import { invalidateCaseQueries, syncCaseDetailCache } from './caseQueryUtils'
 
 export function useCreateCase() {
   const queryClient = useQueryClient()
+  const [uploadProgress, setUploadProgress] = useState(0)
 
-  return useMutation({
-    mutationFn: (file: File) => createCase(file),
+  const mutation = useMutation({
+    mutationFn: (file: File) =>
+      createCase(file, (progress) => setUploadProgress(progress)),
+    onSettled: () => setUploadProgress(0),
     onSuccess: (createdCase) => {
       syncCaseDetailCache(queryClient, createdCase.caseId, createdCase)
       invalidateCaseQueries(queryClient, createdCase.caseId, {
@@ -17,4 +21,6 @@ export function useCreateCase() {
       void queryClient.invalidateQueries({ queryKey: caseKeys.all })
     },
   })
+
+  return { ...mutation, uploadProgress }
 }
