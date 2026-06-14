@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { CASE_STATUSES, type CaseStatus } from '../../../api/types'
 import { formatCaseStatus } from '../../../components'
 import styles from './CaseListFilters.module.css'
@@ -21,6 +21,8 @@ export function CaseListFilters({
   onSearchChange,
 }: CaseListFiltersProps) {
   const [searchDraft, setSearchDraft] = useState(search)
+  const statusFieldId = useId()
+  const searchFieldId = useId()
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -33,10 +35,13 @@ export function CaseListFilters({
   }, [searchDraft, search, onSearchChange])
 
   return (
-    <div className={styles.toolbar}>
-      <label className={styles.field}>
-        <span className={styles.label}>Status</span>
+    <div className={styles.toolbar} role="search" aria-label="Filter applications">
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor={statusFieldId}>
+          Status
+        </label>
         <select
+          id={statusFieldId}
           className={styles.select}
           value={status ?? ''}
           disabled={disabled}
@@ -44,7 +49,6 @@ export function CaseListFilters({
             const value = event.target.value
             onStatusChange(value ? (value as CaseStatus) : undefined)
           }}
-          aria-label="Filter by status"
         >
           <option value="">All statuses</option>
           {CASE_STATUSES.map((caseStatus) => (
@@ -53,20 +57,22 @@ export function CaseListFilters({
             </option>
           ))}
         </select>
-      </label>
+      </div>
 
-      <label className={styles.field}>
-        <span className={styles.label}>Search</span>
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor={searchFieldId}>
+          Search
+        </label>
         <input
+          id={searchFieldId}
           className={styles.input}
           type="search"
           value={searchDraft}
           disabled={disabled}
           onChange={(event) => setSearchDraft(event.target.value)}
           placeholder="Student or company…"
-          aria-label="Search by student or company"
         />
-      </label>
+      </div>
     </div>
   )
 }

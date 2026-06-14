@@ -14,14 +14,25 @@
   text-align: center;
   cursor: pointer;
   transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
+    border-color var(--motion-duration-fast) var(--motion-ease),
+    background var(--motion-duration-fast) var(--motion-ease),
+    transform var(--motion-duration-fast) var(--motion-ease);
 }
 
-.uploadZone:hover,
+.uploadZone:hover {
+  border-color: rgb(59 130 246 / 0.35);
+  background: rgb(59 130 246 / 0.04);
+}
+
+.uploadZone:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
 .uploadZoneActive {
-  border-color: rgb(59 130 246 / 0.45);
-  background: rgb(59 130 246 / 0.06);
+  border-color: rgb(59 130 246 / 0.55);
+  background: rgb(59 130 246 / 0.08);
+  transform: scale(1.005);
 }
 
 .uploadZoneDisabled {
@@ -109,8 +120,27 @@
 
 .validationError {
   margin: 0.75rem 0 0;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid rgb(239 68 68 / 0.35);
+  border-radius: var(--radius-sm);
+  background: rgb(239 68 68 / 0.08);
   font-size: 0.8125rem;
-  color: #fca5a5;
+  color: var(--color-danger-text);
+}
+
+.selectedFile {
+  animation: pageEnter var(--motion-duration-normal) var(--motion-ease);
+}
+
+@media (max-width: 640px) {
+  .uploadZone {
+    min-height: 10rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .actions button {
+    width: 100%;
+  }
 }
 
 .progressWrap {

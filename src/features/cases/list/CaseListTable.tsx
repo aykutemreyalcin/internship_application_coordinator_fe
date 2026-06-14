@@ -48,13 +48,22 @@ export function CaseListTable({ cases }: CaseListTableProps) {
   return (
     <div className={styles.tableWrap}>
       <table className={styles.table}>
+        <caption className={styles.srOnly}>
+          Internship applications. Select a row to open case details.
+        </caption>
         <thead>
           <tr>
             <th scope="col">Student</th>
-            <th scope="col">Company</th>
+            <th scope="col" className={styles.hideMobile}>
+              Company
+            </th>
             <th scope="col">Status</th>
-            <th scope="col">Date</th>
-            <th scope="col">Recommendation</th>
+            <th scope="col" className={styles.hideTablet}>
+              Date
+            </th>
+            <th scope="col" className={styles.hideTablet}>
+              Recommendation
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -69,12 +78,14 @@ export function CaseListTable({ cases }: CaseListTableProps) {
               aria-label={`Open case for ${formatStudent(caseItem)}`}
             >
               <td className={styles.studentCell}>{formatStudent(caseItem)}</td>
-              <td>{caseItem.companyName ?? '—'}</td>
+              <td className={styles.hideMobile}>{caseItem.companyName ?? '—'}</td>
               <td>
                 <StatusBadge status={caseItem.status} />
               </td>
-              <td className={styles.dateCell}>{formatListDate(caseItem.createdAt)}</td>
-              <td>
+              <td className={`${styles.dateCell} ${styles.hideTablet}`}>
+                {formatListDate(caseItem.createdAt)}
+              </td>
+              <td className={styles.hideTablet}>
                 {caseItem.recommendation ? (
                   <span
                     className={`${styles.recommendationBadge} ${styles[`rec${caseItem.recommendation}`]}`}

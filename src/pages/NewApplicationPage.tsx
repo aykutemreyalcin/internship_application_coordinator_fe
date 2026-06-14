@@ -69,9 +69,11 @@ export function NewApplicationPage() {
   }
 
   return (
-    <section className={pageStyles.page}>
+    <section className={`${pageStyles.page} ${pageStyles.pageEnter}`} aria-labelledby="new-application-heading">
       <p className={pageStyles.eyebrow}>Intake</p>
-      <h2 className={pageStyles.title}>New Application</h2>
+      <h2 id="new-application-heading" className={pageStyles.title}>
+        New Application
+      </h2>
       <p className={pageStyles.lead}>
         Upload a student internship application PDF to create a new case for processing.
       </p>
@@ -90,6 +92,7 @@ export function NewApplicationPage() {
         role="button"
         tabIndex={0}
         aria-busy={isUploading}
+        aria-describedby="upload-zone-hint"
         onClick={() => !isUploading && fileInputRef.current?.click()}
         onKeyDown={(event) => {
           if ((event.key === 'Enter' || event.key === ' ') && !isUploading) {
@@ -137,10 +140,16 @@ export function NewApplicationPage() {
           />
         </svg>
         <p className={styles.uploadTitle}>Drop PDF here or click to browse</p>
-        <p className={styles.uploadHint}>PDF only · max 10 MB</p>
+        <p id="upload-zone-hint" className={styles.uploadHint}>
+          PDF only · max 10 MB
+        </p>
       </div>
 
-      {validationError ? <p className={styles.validationError}>{validationError}</p> : null}
+      {validationError ? (
+        <p className={styles.validationError} role="alert">
+          {validationError}
+        </p>
+      ) : null}
 
       {uploadError ? (
         <div className={styles.uploadError}>
