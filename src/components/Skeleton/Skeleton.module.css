@@ -1,0 +1,24 @@
+.skeleton {
+  display: block;
+  width: 100%;
+  min-height: 0.875rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--color-accent-muted) 0%,
+    var(--color-surface-hover) 50%,
+    var(--color-accent-muted) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
