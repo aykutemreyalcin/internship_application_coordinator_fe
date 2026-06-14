@@ -22,6 +22,7 @@ export function NewApplicationPage() {
   const { showToast } = useToast()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const createMutation = useCreateCase()
+  const { uploadProgress } = createMutation
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [validationError, setValidationError] = useState<string | null>(null)
@@ -148,6 +149,22 @@ export function NewApplicationPage() {
           >
             Remove
           </Button>
+        </div>
+      ) : null}
+
+      {isUploading ? (
+        <div
+          className={styles.progressWrap}
+          role="progressbar"
+          aria-valuenow={uploadProgress}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Upload progress"
+        >
+          <div className={styles.progressTrack}>
+            <div className={styles.progressBar} style={{ width: `${uploadProgress}%` }} />
+          </div>
+          <p className={styles.progressLabel}>Uploading… {uploadProgress}%</p>
         </div>
       ) : null}
 

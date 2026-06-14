@@ -17,6 +17,7 @@ import {
   getMockValidation,
   listMockCases,
 } from './store'
+import { validateUploadFile } from '../features/cases/upload/uploadUtils'
 
 function apiError(status: number, error: string, message: string, path: string) {
   return HttpResponse.json(
@@ -63,6 +64,11 @@ export const handlers = [
 
     if (!(file instanceof File)) {
       return apiError(400, 'Bad Request', 'PDF file is required', casePath(request))
+    }
+
+    const validationError = validateUploadFile(file)
+    if (validationError) {
+      return apiError(400, 'Bad Request', validationError, casePath(request))
     }
 
     const created = createMockCase(file.name)

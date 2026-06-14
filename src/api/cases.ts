@@ -25,11 +25,19 @@ export async function fetchCase(caseId: string): Promise<Case> {
 /** Alias used by case detail hooks. */
 export const getCase = fetchCase
 
-export async function createCase(file: File): Promise<Case> {
+export async function createCase(
+  file: File,
+  onUploadProgress?: (percent: number) => void,
+): Promise<Case> {
   const formData = new FormData()
   formData.append('file', file)
   const { data } = await api.post<Case>('/cases', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+    onUploadProgress: (event) => {
+      if (!onUploadProgress || !event.total) {
+        return
+      }
+      onUploadProgress(Math.round((event.loaded * 100) / event.total))
+    },
   })
   return data
 }
