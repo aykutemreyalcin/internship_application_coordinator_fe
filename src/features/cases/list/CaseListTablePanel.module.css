@@ -12,6 +12,17 @@
   border-radius: var(--radius-md);
   background: rgb(9 9 11 / 0.55);
   backdrop-filter: blur(1px);
+  animation: fadeIn var(--motion-duration-fast) var(--motion-ease);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .refetchLabel {

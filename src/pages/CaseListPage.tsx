@@ -48,9 +48,11 @@ export function CaseListPage() {
   const filtersDisabled = isLoading || isFetching
 
   return (
-    <section className={styles.page}>
+    <section className={`${styles.page} ${styles.pageEnter}`} aria-labelledby="case-list-heading">
       <p className={styles.eyebrow}>Applications</p>
-      <h2 className={styles.title}>Case list</h2>
+      <h2 id="case-list-heading" className={styles.title}>
+        Case list
+      </h2>
       <p className={styles.lead}>
         Browse internship applications. Select a case to open its detail view.
       </p>
@@ -115,7 +117,7 @@ export function CaseListPage() {
       ) : null}
 
       {!showInitialLoading && !isError && data && data.content.length > 0 ? (
-        <>
+        <div className={styles.contentSection} aria-live="polite" aria-busy={isFetching}>
           <div className={panelStyles.tablePanel}>
             {showRefetchOverlay ? (
               <div className={panelStyles.refetchOverlay} aria-live="polite">
@@ -135,7 +137,7 @@ export function CaseListPage() {
             onPageChange={(page) => updateFilters({ page }, { resetPage: false })}
           />
           <p className={styles.hint}>Data source: {getApiModeLabel().toLowerCase()}.</p>
-        </>
+        </div>
       ) : null}
     </section>
   )
