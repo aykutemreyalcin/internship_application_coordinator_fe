@@ -56,11 +56,21 @@ export function FieldsTab({ caseData }: FieldsTabProps) {
     },
   ]
 
+  const missingCount = fields.filter((field) => !field.value).length
+
   return (
     <div className={styles.tabContent}>
       <div className={styles.fieldsHeader}>
         <div>
           <h3 className={styles.tabHeading}>Extracted Fields</h3>
+          <p className={styles.tabIntro}>
+            Values extracted from the uploaded PDF. Missing fields are highlighted.
+          </p>
+          {missingCount > 0 ? (
+            <span className={styles.tabMeta}>
+              {missingCount} missing field{missingCount === 1 ? '' : 's'}
+            </span>
+          ) : null}
           {isExtracting && (
             <p className={styles.extractingNotice} role="status">
               Extraction in progress — fields will refresh automatically when complete.

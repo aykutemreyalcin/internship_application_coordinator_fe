@@ -49,3 +49,19 @@
   padding: 1rem;
   overflow-y: auto;
 }
+
+.panelEnter {
+  animation: panelEnter var(--motion-duration-normal) var(--motion-ease);
+}
+
+@keyframes panelEnter {
+  from {
+    opacity: 0;
+    transform: translateY(0.25rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

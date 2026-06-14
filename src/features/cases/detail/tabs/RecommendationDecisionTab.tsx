@@ -169,7 +169,12 @@ export function RecommendationDecisionTab({ caseData }: RecommendationDecisionTa
 
   return (
     <div className={styles.tabContent}>
-      <h3 className={styles.tabHeading}>Recommendation & Decision</h3>
+      <div>
+        <h3 className={styles.tabHeading}>Recommendation & Decision</h3>
+        <p className={styles.tabIntro}>
+          Review the AI recommendation, record your decision, and draft outbound emails.
+        </p>
+      </div>
 
       <section className={styles.recommendationCard}>
         <div className={styles.recommendationHeader}>

@@ -48,20 +48,28 @@ export function HistoryTab({ caseId }: HistoryTabProps) {
   const { data, isLoading, isError, error, refetch, isFetching } = useAuditLog(caseId)
 
   if (isLoading) {
-    return <LoadingBlock label="Loading case history…" />
+    return (
+      <div className={styles.tabContent}>
+        <h3 className={styles.tabHeading}>Case History</h3>
+        <LoadingBlock label="Loading case history…" />
+      </div>
+    )
   }
 
   if (isError) {
     return (
-      <EmptyState
-        title="Failed to load case history"
-        description={getAuditQueryErrorMessage(error)}
-        action={
-          <Button variant="primary" onClick={() => refetch()} loading={isFetching}>
-            Try again
-          </Button>
-        }
-      />
+      <div className={styles.tabContent}>
+        <h3 className={styles.tabHeading}>Case History</h3>
+        <EmptyState
+          title="Failed to load case history"
+          description={getAuditQueryErrorMessage(error)}
+          action={
+            <Button variant="primary" onClick={() => refetch()} loading={isFetching}>
+              Try again
+            </Button>
+          }
+        />
+      </div>
     )
   }
 
@@ -101,7 +109,10 @@ export function HistoryTab({ caseId }: HistoryTabProps) {
       ) : null}
 
       {entries.length === 0 ? (
-        <p className={styles.placeholder}>No audit events recorded for this case yet.</p>
+        <EmptyState
+          title="No history yet"
+          description="Audit events will appear here after upload, extraction, validation, and coordinator actions."
+        />
       ) : (
         <ol className={styles.timeline}>
           {entries.map((entry) => (

@@ -1,7 +1,8 @@
 import { useEffect, useMemo } from 'react'
+import { documentUrl } from '../../../api/cases'
 import { getDocumentQueryErrorMessage, useDocument } from '../../../api/hooks/useDocument'
 import type { ApplicationDocument } from '../../../api/types'
-import { Button, EmptyState, LoadingBlock } from '../../../components'
+import { Button, EmptyState, Skeleton } from '../../../components'
 import styles from './CaseSummaryPanel.module.css'
 
 interface PdfPreviewProps {
@@ -16,6 +17,7 @@ export function PdfPreview({ caseId, document }: PdfPreviewProps) {
   )
 
   const objectUrl = useMemo(() => (blob ? URL.createObjectURL(blob) : null), [blob])
+  const openUrl = objectUrl ?? documentUrl(caseId, document.id)
 
   useEffect(() => {
     return () => {
@@ -25,44 +27,61 @@ export function PdfPreview({ caseId, document }: PdfPreviewProps) {
     }
   }, [objectUrl])
 
-  if (isLoading) {
-    return (
-      <div className={styles.pdfPreview}>
-        <LoadingBlock label="Loading PDF…" />
-      </div>
-    )
-  }
-
-  if (isError) {
-    return (
-      <div className={styles.pdfPreview}>
-        <EmptyState
-          title="Failed to load PDF"
-          description={getDocumentQueryErrorMessage(error)}
-          action={
-            <Button variant="primary" onClick={() => refetch()} loading={isFetching}>
-              Try again
-            </Button>
-          }
-        />
-      </div>
-    )
-  }
-
-  if (!objectUrl) {
-    return null
-  }
-
   return (
     <div className={styles.pdfPreview}>
-      <iframe
-        className={styles.pdfFrame}
-        src={objectUrl}
-        title={`PDF preview: ${document.fileName}`}
-      />
-      <p className={styles.pdfCaption}>
-        {document.fileName} · {document.pageCount} pages
-      </p>
+      <div className={styles.pdfToolbar}>
+        <div className={styles.pdfToolbarMeta}>
+          <span className={styles.pdfToolbarLabel}>Document</span>
+          <span className={styles.pdfToolbarName} title={document.fileName}>
+            {document.fileName}
+          </span>
+        </div>
+        {!isLoading && !isError && objectUrl ? (
+          <a
+            className={styles.pdfOpenLink}
+            href={openUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open in new tab
+          </a>
+        ) : null}
+      </div>
+
+      {isLoading ? (
+        <div className={styles.pdfFrameShell} aria-busy="true" aria-label="Loading PDF preview">
+          <Skeleton className={styles.pdfLoadingSkeleton} />
+          <p className={styles.pdfLoadingLabel}>Loading PDF…</p>
+        </div>
+      ) : null}
+
+      {isError ? (
+        <div className={styles.pdfFrameShell}>
+          <EmptyState
+            title="Failed to load PDF"
+            description={getDocumentQueryErrorMessage(error)}
+            action={
+              <Button variant="primary" size="sm" onClick={() => refetch()} loading={isFetching}>
+                Try again
+              </Button>
+            }
+          />
+        </div>
+      ) : null}
+
+      {!isLoading && !isError && objectUrl ? (
+        <iframe
+          className={styles.pdfFrame}
+          src={objectUrl}
+          title={`PDF preview: ${document.fileName}`}
+        />
+      ) : null}
+
+      {!isLoading && !isError && objectUrl ? (
+        <p className={styles.pdfCaption}>
+          {document.fileName} · {document.pageCount} {document.pageCount === 1 ? 'page' : 'pages'}
+        </p>
+      ) : null}
     </div>
   )
 }
