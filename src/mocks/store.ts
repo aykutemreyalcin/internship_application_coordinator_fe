@@ -350,6 +350,30 @@ export function buildClarificationDraft(caseId: string) {
   }
 }
 
+export function sendMockClarificationEmail(
+  caseId: string,
+  payload: { subject: string; body: string },
+): Case | undefined {
+  const applicationCase = getMockCase(caseId)
+  if (!applicationCase) {
+    return undefined
+  }
+
+  return updateCase(caseId, (currentCase) => {
+    appendAudit(
+      caseId,
+      'COORDINATOR',
+      'CLARIFICATION_SENT',
+      `Clarification email sent to student — "${payload.subject}"`,
+    )
+
+    return {
+      ...currentCase,
+      status: 'CLARIFICATION_REQUESTED',
+    }
+  })
+}
+
 export function buildSupervisorVerificationDraft(caseId: string) {
   const applicationCase = getMockCase(caseId)
   if (!applicationCase) {
@@ -371,4 +395,28 @@ export function buildSupervisorVerificationDraft(caseId: string) {
     subject: 'Internship supervisor verification request',
     body: `Dear ${applicationCase.supervisorName ?? 'Supervisor'},\n\nPlease confirm the internship arrangement for our student.\n\nBest regards,\nInternship Coordinator`,
   }
+}
+
+export function sendMockSupervisorVerificationEmail(
+  caseId: string,
+  payload: { subject: string; body: string },
+): Case | undefined {
+  const applicationCase = getMockCase(caseId)
+  if (!applicationCase) {
+    return undefined
+  }
+
+  return updateCase(caseId, (currentCase) => {
+    appendAudit(
+      caseId,
+      'COORDINATOR',
+      'SUPERVISOR_VERIFICATION_SENT',
+      `Supervisor verification email sent — "${payload.subject}"`,
+    )
+
+    return {
+      ...currentCase,
+      status: 'PENDING_SUPERVISOR',
+    }
+  })
 }

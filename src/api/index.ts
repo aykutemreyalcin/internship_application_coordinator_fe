@@ -5,12 +5,15 @@ export {
   documentUrl,
   extractCase,
   fetchAuditLog,
+  fetchDocument,
   fetchCase,
   fetchCases,
   fetchValidation,
   generateClarification,
+  sendClarification,
   generateRecommendation,
   generateSupervisorVerification,
+  sendSupervisorVerification,
   getCase,
 } from './cases'
 export type {
@@ -24,7 +27,6 @@ export type {
   ClarificationDraftResponse,
   CoordinatorDecision,
   CoordinatorDecisionRequest,
-  EditableCaseField,
   IssueSeverity,
   PageResponse,
   Recommendation,

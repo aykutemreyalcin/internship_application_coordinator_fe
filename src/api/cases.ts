@@ -1,4 +1,5 @@
-import { api } from './client'
+import { isMockApiEnabled } from '../config/env'
+import { api, ApiError, isApiErrorResponse } from './client'
 import type {
   AuditLogEntry,
   Case,
@@ -24,11 +25,19 @@ export async function fetchCase(caseId: string): Promise<Case> {
 /** Alias used by case detail hooks. */
 export const getCase = fetchCase
 
-export async function createCase(file: File): Promise<Case> {
+export async function createCase(
+  file: File,
+  onUploadProgress?: (percent: number) => void,
+): Promise<Case> {
   const formData = new FormData()
   formData.append('file', file)
   const { data } = await api.post<Case>('/cases', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+    onUploadProgress: (event) => {
+      if (!onUploadProgress || !event.total) {
+        return
+      }
+      onUploadProgress(Math.round((event.loaded * 100) / event.total))
+    },
   })
   return data
 }
@@ -61,6 +70,24 @@ export async function generateClarification(caseId: string): Promise<Clarificati
   return data
 }
 
+export type ClarificationSendRequest = {
+  subject: string
+  body: string
+}
+
+export async function sendClarification(
+  caseId: string,
+  request: ClarificationSendRequest,
+): Promise<Case> {
+  if (isMockApiEnabled()) {
+    const { data } = await api.post<Case>(`/cases/${caseId}/clarification/send`, request)
+    return data
+  }
+
+  // Real backend (phase 1): draft generation updates case status; refresh detail after confirm.
+  return fetchCase(caseId)
+}
+
 export async function generateSupervisorVerification(
   caseId: string,
 ): Promise<SupervisorVerificationDraftResponse> {
@@ -68,6 +95,27 @@ export async function generateSupervisorVerification(
     `/cases/${caseId}/supervisor-verification`,
   )
   return data
+}
+
+export type SupervisorVerificationSendRequest = {
+  subject: string
+  body: string
+}
+
+export async function sendSupervisorVerification(
+  caseId: string,
+  request: SupervisorVerificationSendRequest,
+): Promise<Case> {
+  if (isMockApiEnabled()) {
+    const { data } = await api.post<Case>(
+      `/cases/${caseId}/supervisor-verification/send`,
+      request,
+    )
+    return data
+  }
+
+  // Real backend (phase 1): draft generation updates case status; refresh detail after confirm.
+  return fetchCase(caseId)
 }
 
 export async function fetchAuditLog(caseId: string): Promise<AuditLogEntry[]> {
@@ -78,4 +126,22 @@ export async function fetchAuditLog(caseId: string): Promise<AuditLogEntry[]> {
 export function documentUrl(caseId: string, documentId: string): string {
   const baseUrl = api.defaults.baseURL?.replace(/\/$/, '') ?? ''
   return `${baseUrl}/cases/${caseId}/documents/${documentId}`
+}
+
+export async function fetchDocument(caseId: string, documentId: string): Promise<Blob> {
+  const { data, headers } = await api.get<Blob>(`/cases/${caseId}/documents/${documentId}`, {
+    responseType: 'blob',
+    headers: { Accept: 'application/pdf' },
+  })
+
+  const contentType = (headers['content-type'] as string | undefined) ?? data.type
+  if (contentType.includes('application/json')) {
+    const text = await data.text()
+    const parsed = JSON.parse(text) as unknown
+    if (isApiErrorResponse(parsed)) {
+      throw new ApiError(parsed)
+    }
+  }
+
+  return data
 }

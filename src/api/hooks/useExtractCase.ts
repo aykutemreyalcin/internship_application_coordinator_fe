@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { extractCase } from '../cases'
-import { caseKeys } from '../queryKeys'
+import { invalidateCaseQueries, syncCaseDetailCache } from './caseQueryUtils'
 
 export function useExtractCase(caseId: string) {
   const queryClient = useQueryClient()
@@ -8,7 +8,12 @@ export function useExtractCase(caseId: string) {
   return useMutation({
     mutationFn: () => extractCase(caseId),
     onSuccess: (updatedCase) => {
-      queryClient.setQueryData(caseKeys.detail(caseId), updatedCase)
+      syncCaseDetailCache(queryClient, caseId, updatedCase)
+      invalidateCaseQueries(queryClient, caseId, {
+        detail: false,
+        audit: true,
+        validation: true,
+      })
     },
   })
 }

@@ -1,0 +1,168 @@
+.uploadZone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 12rem;
+  padding: 2rem 1.5rem;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-muted);
+  color: var(--color-text-secondary);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color var(--motion-duration-fast) var(--motion-ease),
+    background var(--motion-duration-fast) var(--motion-ease),
+    transform var(--motion-duration-fast) var(--motion-ease);
+}
+
+.uploadZone:hover {
+  border-color: rgb(59 130 246 / 0.35);
+  background: rgb(59 130 246 / 0.04);
+}
+
+.uploadZone:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.uploadZoneActive {
+  border-color: rgb(59 130 246 / 0.55);
+  background: rgb(59 130 246 / 0.08);
+  transform: scale(1.005);
+}
+
+.uploadZoneDisabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.uploadOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  border-radius: inherit;
+  background: rgb(9 9 11 / 0.72);
+}
+
+.uploadOverlayLabel {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.uploadError {
+  margin-top: 1rem;
+}
+
+.uploadIcon {
+  width: 2rem;
+  height: 2rem;
+  color: var(--color-text-muted);
+}
+
+.uploadTitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.uploadHint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.fileInput {
+  display: none;
+}
+
+.selectedFile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.fileMeta {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text);
+}
+
+.fileSize {
+  margin: 0.125rem 0 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.validationError {
+  margin: 0.75rem 0 0;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid rgb(239 68 68 / 0.35);
+  border-radius: var(--radius-sm);
+  background: rgb(239 68 68 / 0.08);
+  font-size: 0.8125rem;
+  color: var(--color-danger-text);
+}
+
+.selectedFile {
+  animation: pageEnter var(--motion-duration-normal) var(--motion-ease);
+}
+
+@media (max-width: 640px) {
+  .uploadZone {
+    min-height: 10rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+}
+
+.progressWrap {
+  margin-top: 1rem;
+}
+
+.progressTrack {
+  height: 0.375rem;
+  border-radius: 999px;
+  background: var(--color-accent-muted);
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: inherit;
+  background: rgb(59 130 246 / 0.85);
+  transition: width 0.15s ease;
+}
+
+.progressLabel {
+  margin: 0.375rem 0 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}

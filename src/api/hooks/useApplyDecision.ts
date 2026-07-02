@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { applyDecision } from '../cases'
 import type { CoordinatorDecisionRequest } from '../types'
-import { caseKeys } from '../queryKeys'
+import { invalidateCaseQueries, syncCaseDetailCache } from './caseQueryUtils'
 
 export function useApplyDecision(caseId: string) {
   const queryClient = useQueryClient()
@@ -9,9 +9,8 @@ export function useApplyDecision(caseId: string) {
   return useMutation({
     mutationFn: (request: CoordinatorDecisionRequest) => applyDecision(caseId, request),
     onSuccess: (updatedCase) => {
-      queryClient.setQueryData(caseKeys.detail(caseId), updatedCase)
-      void queryClient.invalidateQueries({ queryKey: caseKeys.all })
-      void queryClient.invalidateQueries({ queryKey: caseKeys.audit(caseId) })
+      syncCaseDetailCache(queryClient, caseId, updatedCase)
+      invalidateCaseQueries(queryClient, caseId, { detail: false, audit: true })
     },
   })
 }

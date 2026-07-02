@@ -37,21 +37,6 @@ const navItems = [
       </svg>
     ),
   },
-  {
-    to: '/dev/components',
-    label: 'UI Components',
-    end: true,
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path
-          d="M4 7h6v6H4V7Zm10 0h6v6h-6V7ZM4 17h6v6H4v-6Zm10 0h6v6h-6v-6Z"
-          stroke="currentColor"
-          strokeWidth="1.75"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
 ] as const
 
 export function Sidebar({ isOpen, onNavigate }: SidebarProps) {

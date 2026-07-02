@@ -3,6 +3,8 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-color: var(--color-border-strong) transparent;
 }
 
 .table {
@@ -36,16 +38,22 @@
 
 .row {
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition:
+    background var(--motion-duration-fast) var(--motion-ease),
+    transform var(--motion-duration-fast) var(--motion-ease);
 }
 
-.row:hover,
+.row:hover {
+  background: var(--color-surface-muted);
+}
+
+.row:active {
+  transform: scale(0.998);
+}
+
 .row:focus-visible {
   background: var(--color-surface-muted);
   outline: none;
-}
-
-.row:focus-visible {
   box-shadow: inset 0 0 0 1px var(--color-border-strong);
 }
 
@@ -85,4 +93,41 @@
   font-size: 0.8125rem;
   color: var(--color-text-muted);
   font-style: italic;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 900px) {
+  .table {
+    min-width: 36rem;
+  }
+
+  .hideTablet {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .table {
+    min-width: 22rem;
+  }
+
+  .hideMobile {
+    display: none;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.75rem 0.625rem;
+  }
 }

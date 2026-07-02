@@ -77,7 +77,12 @@ export function ValidationTab({ caseId }: ValidationTabProps) {
   const { data, isLoading, isError, error, refetch, isFetching } = useValidation(caseId)
 
   if (isLoading) {
-    return <LoadingBlock label="Loading validation results…" />
+    return (
+      <div className={styles.tabContent}>
+        <h3 className={styles.tabHeading}>Validation Results</h3>
+        <LoadingBlock label="Loading validation results…" />
+      </div>
+    )
   }
 
   if (isError && isNotFoundError(error)) {
@@ -94,15 +99,18 @@ export function ValidationTab({ caseId }: ValidationTabProps) {
 
   if (isError) {
     return (
-      <EmptyState
-        title="Failed to load validation"
-        description={getValidationQueryErrorMessage(error)}
-        action={
-          <Button variant="primary" onClick={() => refetch()} loading={isFetching}>
-            Try again
-          </Button>
-        }
-      />
+      <div className={styles.tabContent}>
+        <h3 className={styles.tabHeading}>Validation Results</h3>
+        <EmptyState
+          title="Failed to load validation"
+          description={getValidationQueryErrorMessage(error)}
+          action={
+            <Button variant="primary" onClick={() => refetch()} loading={isFetching}>
+              Try again
+            </Button>
+          }
+        />
+      </div>
     )
   }
 
@@ -118,6 +126,9 @@ export function ValidationTab({ caseId }: ValidationTabProps) {
   return (
     <div className={styles.tabContent}>
       <h3 className={styles.tabHeading}>Validation Results</h3>
+      <p className={styles.tabIntro}>
+        Automated completeness and university rule checks for this application.
+      </p>
       <ValidationSummaryBanner validation={data} />
       <ValidationSection title="Completeness" block={data.completeness} />
       <ValidationSection title="University Rules" block={data.rules} />

@@ -68,16 +68,6 @@ export type Case = {
   updatedAt: string
 }
 
-export type EditableCaseField =
-  | 'studentName'
-  | 'studentId'
-  | 'fieldOfStudy'
-  | 'companyName'
-  | 'supervisorName'
-  | 'supervisorEmail'
-  | 'internshipStartDate'
-  | 'internshipEndDate'
-
 /** Case row in list — `GET /cases` item (`CaseSummaryResponse`). */
 export type CaseSummary = {
   caseId: string

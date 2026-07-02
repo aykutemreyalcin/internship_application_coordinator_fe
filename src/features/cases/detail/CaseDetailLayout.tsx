@@ -1,7 +1,8 @@
 import { Tabs, type TabItem } from '../../../components/Tabs/Tabs'
+import { useCaseDetailEffects } from '../../../api/hooks/useCaseDetailEffects'
 import type { Case } from '../../../api/types'
 import { CaseSummaryPanel } from './CaseSummaryPanel'
-import { FieldsTab } from './fields/FieldsTab'
+import { FieldsTab } from './tabs/FieldsTab'
 import { ValidationTab } from './tabs/ValidationTab'
 import { RecommendationDecisionTab } from './tabs/RecommendationDecisionTab'
 import { HistoryTab } from './tabs/HistoryTab'
@@ -12,6 +13,8 @@ interface CaseDetailLayoutProps {
 }
 
 export function CaseDetailLayout({ caseData }: CaseDetailLayoutProps) {
+  useCaseDetailEffects(caseData)
+
   const tabs: TabItem[] = [
     { id: 'fields', label: 'Fields', content: <FieldsTab caseData={caseData} /> },
     {
@@ -24,7 +27,7 @@ export function CaseDetailLayout({ caseData }: CaseDetailLayoutProps) {
       label: 'Recommendation / Decision',
       content: <RecommendationDecisionTab caseData={caseData} />,
     },
-    { id: 'history', label: 'History', content: <HistoryTab /> },
+    { id: 'history', label: 'History', content: <HistoryTab caseId={caseData.caseId} /> },
   ]
 
   return (
