@@ -5,6 +5,7 @@ import type {
   Case,
   CaseListParams,
   CaseSummary,
+  CaseType,
   ClarificationDraftResponse,
   CoordinatorDecisionRequest,
   PageResponse,
@@ -28,9 +29,13 @@ export const getCase = fetchCase
 export async function createCase(
   file: File,
   onUploadProgress?: (percent: number) => void,
+  caseType?: CaseType,
 ): Promise<Case> {
   const formData = new FormData()
   formData.append('file', file)
+  if (caseType) {
+    formData.append('caseType', caseType)
+  }
   const { data } = await api.post<Case>('/cases', formData, {
     onUploadProgress: (event) => {
       if (!onUploadProgress || !event.total) {
@@ -131,7 +136,10 @@ export function documentUrl(caseId: string, documentId: string): string {
 export async function fetchDocument(caseId: string, documentId: string): Promise<Blob> {
   const { data, headers } = await api.get<Blob>(`/cases/${caseId}/documents/${documentId}`, {
     responseType: 'blob',
-    headers: { Accept: 'application/pdf' },
+    headers: {
+      Accept:
+        'application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/octet-stream',
+    },
   })
 
   const contentType = (headers['content-type'] as string | undefined) ?? data.type

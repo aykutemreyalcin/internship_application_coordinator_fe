@@ -48,9 +48,85 @@ export type ApplicationDocument = {
   pageCount: number | null
 }
 
+/** Matches backend `CaseType` (BE-ID-00). */
+export const CASE_TYPES = [
+  'APPLICATION',
+  'LEARNING_OUTCOMES_REPORT',
+  'INTERNSHIP_JOURNAL',
+] as const
+
+export type CaseType = (typeof CASE_TYPES)[number]
+
+export const DOCUMENT_CASE_TYPES = [
+  'LEARNING_OUTCOMES_REPORT',
+  'INTERNSHIP_JOURNAL',
+] as const
+
+export type DocumentCaseType = (typeof DOCUMENT_CASE_TYPES)[number]
+
+export type LearningOutcomeRow = {
+  code: string
+  outcome: string
+  waysOfAchieving: string | null
+}
+
+export type SignatureField = {
+  present: boolean
+  name: string | null
+}
+
+export type ReportSignatures = {
+  student: SignatureField
+  supervisor: SignatureField
+  dean: SignatureField
+}
+
+export type LearningOutcomesReportPayload = {
+  studentName: string | null
+  studentId: string | null
+  reportDate: string | null
+  hostCompany: string | null
+  internshipStartDate: string | null
+  internshipEndDate: string | null
+  outcomes: LearningOutcomeRow[]
+  signatures: ReportSignatures
+}
+
+export type JournalDayEntry = {
+  day: string
+  hours: number | null
+  activities: string | null
+}
+
+export type WeeklyEntry = {
+  weekNumber: number
+  startDate: string | null
+  endDate: string | null
+  days: JournalDayEntry[]
+  totalHours: number
+}
+
+export type InternshipJournalPayload = {
+  faculty: string | null
+  fieldOfStudy: string | null
+  studentName: string | null
+  studentId: string | null
+  studyForm: string | null
+  academicYear: string | null
+  companyName: string | null
+  companyAddress: string | null
+  supervisorName: string | null
+  internshipStartDate: string | null
+  internshipEndDate: string | null
+  weeks: WeeklyEntry[]
+}
+
+export type ExtractedPayload = LearningOutcomesReportPayload | InternshipJournalPayload | null
+
 /** Full case detail — `GET /cases/{id}` (`CaseDetailResponse`). */
 export type Case = {
   caseId: string
+  caseType: CaseType
   status: CaseStatus
   studentName: string | null
   studentId: string | null
@@ -63,6 +139,7 @@ export type Case = {
   recommendation: Recommendation | null
   recommendationReason: string | null
   validation: ValidationSummary | null
+  extractedPayload: ExtractedPayload
   documents: ApplicationDocument[]
   createdAt: string
   updatedAt: string
@@ -71,6 +148,7 @@ export type Case = {
 /** Case row in list — `GET /cases` item (`CaseSummaryResponse`). */
 export type CaseSummary = {
   caseId: string
+  caseType: CaseType
   status: CaseStatus
   studentName: string | null
   studentId: string | null
@@ -135,4 +213,6 @@ export type CaseListParams = {
   search?: string
   page?: number
   size?: number
+  /** Single type, or several types (document list “All”). */
+  caseType?: CaseType | CaseType[]
 }
