@@ -12,6 +12,7 @@ function cloneAuditLog(entry: AuditLogEntry): AuditLogEntry {
 function toSummary(applicationCase: Case): CaseSummary {
   return {
     caseId: applicationCase.caseId,
+    caseType: applicationCase.caseType,
     status: applicationCase.status,
     studentName: applicationCase.studentName,
     studentId: applicationCase.studentId,
@@ -115,6 +116,8 @@ export function createMockCase(fileName: string): Case {
 
   const applicationCase: Case = {
     caseId,
+    caseType: 'APPLICATION',
+    extractedPayload: null,
     status: 'NEW',
     studentName: null,
     studentId: null,

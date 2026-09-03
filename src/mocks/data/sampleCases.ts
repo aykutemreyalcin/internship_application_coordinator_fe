@@ -62,6 +62,8 @@ const ruleViolationValidation: ValidationSummary = {
 export const MOCK_CASES: Case[] = [
   {
     caseId: '11111111-1111-4111-8111-111111111101',
+    caseType: 'APPLICATION',
+    extractedPayload: null,
     status: 'READY_FOR_REVIEW',
     studentName: 'Jan Kowalski',
     studentId: '100001',
@@ -80,6 +82,8 @@ export const MOCK_CASES: Case[] = [
   },
   {
     caseId: '11111111-1111-4111-8111-111111111102',
+    caseType: 'APPLICATION',
+    extractedPayload: null,
     status: 'APPROVED',
     studentName: 'Maria Wisniewska',
     studentId: '100002',
@@ -98,6 +102,8 @@ export const MOCK_CASES: Case[] = [
   },
   {
     caseId: '22222222-2222-4222-8222-222222222201',
+    caseType: 'APPLICATION',
+    extractedPayload: null,
     status: 'NEW',
     studentName: 'Tomasz Lewandowski',
     studentId: null,
@@ -116,6 +122,8 @@ export const MOCK_CASES: Case[] = [
   },
   {
     caseId: '22222222-2222-4222-8222-222222222202',
+    caseType: 'APPLICATION',
+    extractedPayload: null,
     status: 'NEW',
     studentName: 'Katarzyna Dabrowska',
     studentId: '200004',
@@ -134,6 +142,8 @@ export const MOCK_CASES: Case[] = [
   },
   {
     caseId: '33333333-3333-4333-8333-333333333301',
+    caseType: 'APPLICATION',
+    extractedPayload: null,
     status: 'NEW',
     studentName: 'Piotr Zajac',
     studentId: '300001',
@@ -152,6 +162,8 @@ export const MOCK_CASES: Case[] = [
   },
   {
     caseId: '44444444-4444-4444-8444-444444444401',
+    caseType: 'APPLICATION',
+    extractedPayload: null,
     status: 'READY_FOR_REVIEW',
     studentName: 'Agnieszka Wojcik',
     studentId: '400001',
