@@ -45,6 +45,7 @@ export type ValidationSummary = {
 export type ApplicationDocument = {
   id: string
   fileName: string
+  contentType?: string | null
   pageCount: number | null
 }
 
@@ -64,61 +65,64 @@ export const DOCUMENT_CASE_TYPES = [
 
 export type DocumentCaseType = (typeof DOCUMENT_CASE_TYPES)[number]
 
-export type LearningOutcomeRow = {
+/** Matches backend `LearningOutcomeEntry`. */
+export type LearningOutcomeEntry = {
   code: string
-  outcome: string
+  description: string
   waysOfAchieving: string | null
 }
 
-export type SignatureField = {
-  present: boolean
-  name: string | null
-}
-
-export type ReportSignatures = {
-  student: SignatureField
-  supervisor: SignatureField
-  dean: SignatureField
-}
-
+/** Matches backend `ExtractedLearningOutcomesReportData`. */
 export type LearningOutcomesReportPayload = {
   studentName: string | null
   studentId: string | null
   reportDate: string | null
-  hostCompany: string | null
+  hostCompanyOrEmployer: string | null
   internshipStartDate: string | null
   internshipEndDate: string | null
-  outcomes: LearningOutcomeRow[]
-  signatures: ReportSignatures
+  learningOutcomes: LearningOutcomeEntry[]
+  studentSignaturePresent: boolean | null
+  supervisorName: string | null
+  supervisorComments: string | null
+  supervisorSignaturePresent: boolean | null
+  supervisorConfirmationDate: string | null
+  ectsCredits: number | null
+  recognizedInternshipMonths: number | null
+  allOutcomesAchieved: string | null
+  deanSupervisorComments: string | null
 }
 
+/** Matches backend `JournalDayEntry`. */
 export type JournalDayEntry = {
-  day: string
-  hours: number | null
+  date: string | null
+  hoursFrom: string | null
+  hoursTo: string | null
+  workingHours: number | null
   activities: string | null
 }
 
-export type WeeklyEntry = {
-  weekNumber: number
-  startDate: string | null
-  endDate: string | null
+/** Matches backend `JournalWeekEntry`. */
+export type JournalWeekEntry = {
+  weekStart: string | null
+  weekEnd: string | null
   days: JournalDayEntry[]
-  totalHours: number
+  supervisorSignaturePresent: boolean | null
 }
 
+/** Matches backend `ExtractedInternshipJournalData`. */
 export type InternshipJournalPayload = {
-  faculty: string | null
-  fieldOfStudy: string | null
   studentName: string | null
   studentId: string | null
+  faculty: string | null
+  fieldOfStudy: string | null
   studyForm: string | null
   academicYear: string | null
   companyName: string | null
   companyAddress: string | null
-  supervisorName: string | null
   internshipStartDate: string | null
   internshipEndDate: string | null
-  weeks: WeeklyEntry[]
+  companySupervisorName: string | null
+  weeklyEntries: JournalWeekEntry[]
 }
 
 export type ExtractedPayload = LearningOutcomesReportPayload | InternshipJournalPayload | null

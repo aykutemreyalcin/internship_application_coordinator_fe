@@ -38,6 +38,7 @@ export function parseCaseListSearchParams(params: URLSearchParams): CaseListFilt
 export function toCaseListParams(state: CaseListFilterState): CaseListParams {
   const trimmedSearch = state.search.trim()
   return {
+    caseType: 'APPLICATION',
     status: state.status,
     search: trimmedSearch || undefined,
     page: state.page,

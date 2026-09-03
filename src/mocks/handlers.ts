@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw'
-import type { CaseStatus } from '../api/types'
-import { CASE_STATUSES } from '../api/types'
+import type { CaseStatus, CaseType, DocumentCaseType } from '../api/types'
+import { CASE_STATUSES, DOCUMENT_CASE_TYPES } from '../api/types'
 import { MOCK_PDF_BYTES } from './data/sampleCases'
 import {
   applyMockDecision,
@@ -9,6 +9,7 @@ import {
   buildSupervisorVerificationDraft,
   sendMockSupervisorVerificationEmail,
   createMockCase,
+  createMockDocumentCase,
   startMockExtraction,
   generateMockRecommendation,
   getMockAuditLog,
@@ -17,7 +18,7 @@ import {
   getMockValidation,
   listMockCases,
 } from './store'
-import { validateUploadFile } from '../features/cases/upload/uploadUtils'
+import { validateDocumentUploadFile, validateUploadFile } from '../features/cases/upload/uploadUtils'
 
 function apiError(status: number, error: string, message: string, path: string) {
   return HttpResponse.json(
@@ -48,10 +49,19 @@ export const handlers = [
     const page = Number(url.searchParams.get('page') ?? '0')
     const size = Number(url.searchParams.get('size') ?? '20')
 
+    const caseTypeParams = url.searchParams.getAll('caseType')
+    let caseType: CaseType | CaseType[] | null = null
+    if (caseTypeParams.length === 1) {
+      caseType = caseTypeParams[0] as CaseType
+    } else if (caseTypeParams.length > 1) {
+      caseType = caseTypeParams as CaseType[]
+    }
+
     return HttpResponse.json(
       listMockCases({
         status,
         search,
+        caseType,
         page: Number.isFinite(page) ? page : 0,
         size: Number.isFinite(size) ? size : 20,
       }),
@@ -61,17 +71,28 @@ export const handlers = [
   http.post('*/api/cases', async ({ request }) => {
     const formData = await request.formData()
     const file = formData.get('file')
+    const caseTypeParam = formData.get('caseType')
 
     if (!(file instanceof File)) {
-      return apiError(400, 'Bad Request', 'PDF file is required', casePath(request))
+      return apiError(400, 'Bad Request', 'File is required', casePath(request))
     }
 
-    const validationError = validateUploadFile(file)
+    const isDocumentUpload =
+      typeof caseTypeParam === 'string' &&
+      DOCUMENT_CASE_TYPES.includes(caseTypeParam as DocumentCaseType)
+
+    const validationError = isDocumentUpload
+      ? validateDocumentUploadFile(file)
+      : validateUploadFile(file)
+
     if (validationError) {
       return apiError(400, 'Bad Request', validationError, casePath(request))
     }
 
-    const created = createMockCase(file.name)
+    const created = isDocumentUpload
+      ? createMockDocumentCase(file.name, caseTypeParam as DocumentCaseType)
+      : createMockCase(file.name)
+
     return HttpResponse.json(created, { status: 201 })
   }),
 

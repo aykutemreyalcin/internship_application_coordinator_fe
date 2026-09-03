@@ -1,7 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query'
 import type { Case } from '../types'
 import { isApiError } from '../client'
-import { caseKeys } from '../queryKeys'
+import { caseKeys, documentKeys } from '../queryKeys'
 
 export type InvalidateCaseOptions = {
   detail?: boolean
@@ -16,6 +16,7 @@ export function syncCaseDetailCache(
   updatedCase: Case,
 ): void {
   queryClient.setQueryData(caseKeys.detail(caseId), updatedCase)
+  queryClient.setQueryData(documentKeys.detail(caseId), updatedCase)
 }
 
 export function invalidateCaseQueries(
@@ -30,6 +31,7 @@ export function invalidateCaseQueries(
   }
   if (list) {
     void queryClient.invalidateQueries({ queryKey: caseKeys.all })
+    void queryClient.invalidateQueries({ queryKey: documentKeys.all })
   }
   if (audit) {
     void queryClient.invalidateQueries({ queryKey: caseKeys.audit(caseId) })

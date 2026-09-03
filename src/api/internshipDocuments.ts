@@ -9,8 +9,37 @@ export type DocumentListParams = Omit<CaseListParams, 'caseType'> & {
 export async function fetchDocuments(
   params: DocumentListParams = {},
 ): Promise<PageResponse<CaseSummary>> {
-  const caseType: CaseType | CaseType[] = params.caseType ?? [...DOCUMENT_CASE_TYPES]
-  return fetchCases({ ...params, caseType })
+  if (params.caseType) {
+    return fetchCases({ ...params, caseType: params.caseType })
+  }
+
+  const [reports, journals] = await Promise.all(
+    DOCUMENT_CASE_TYPES.map((caseType) =>
+      fetchCases({
+        ...params,
+        caseType,
+        page: 0,
+        size: 500,
+      }),
+    ),
+  )
+
+  const merged = [...reports.content, ...journals.content].sort((left, right) =>
+    right.createdAt.localeCompare(left.createdAt),
+  )
+
+  const page = params.page ?? 0
+  const size = params.size ?? 20
+  const start = page * size
+  const content = merged.slice(start, start + size)
+
+  return {
+    content,
+    page,
+    size,
+    totalElements: merged.length,
+    totalPages: Math.max(1, Math.ceil(merged.length / size)),
+  }
 }
 
 export async function fetchDocumentCase(caseId: string): Promise<Case> {
@@ -23,4 +52,8 @@ export async function createDocumentCase(
   onUploadProgress?: (percent: number) => void,
 ): Promise<Case> {
   return createCase(file, onUploadProgress, caseType)
+}
+
+export function isDocumentCaseType(caseType: CaseType): caseType is DocumentCaseType {
+  return DOCUMENT_CASE_TYPES.includes(caseType as DocumentCaseType)
 }

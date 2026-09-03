@@ -1,0 +1,38 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.report {
+  border: 1px solid rgb(129 140 248 / 0.35);
+  background: var(--color-report-soft);
+  color: #c7d2fe;
+}
+
+.journal {
+  border: 1px solid rgb(45 212 191 / 0.35);
+  background: var(--color-journal-soft);
+  color: #99f6e4;
+}
+
+.application {
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-accent-soft);
+  color: var(--color-text-secondary);
+}
+
+.dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.85;
+}

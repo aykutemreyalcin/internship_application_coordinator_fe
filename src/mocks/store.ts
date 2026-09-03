@@ -1,5 +1,14 @@
-import type { AuditLogEntry, Case, CaseStatus, CaseSummary, Recommendation } from '../api/types'
+import type {
+  AuditLogEntry,
+  Case,
+  CaseStatus,
+  CaseSummary,
+  CaseType,
+  DocumentCaseType,
+  Recommendation,
+} from '../api/types'
 import { MOCK_AUDIT_LOGS, MOCK_CASES } from './data/sampleCases'
+import { MOCK_DOCUMENT_AUDIT_LOGS, MOCK_DOCUMENT_CASES } from './data/sampleDocumentCases'
 
 function cloneCase(applicationCase: Case): Case {
   return structuredClone(applicationCase)
@@ -36,13 +45,17 @@ function newId(prefix: string): string {
 
 const MOCK_EXTRACTION_DELAY_MS = 2000
 
-let cases: Case[] = MOCK_CASES.map(cloneCase)
-const auditLogs = new Map<string, AuditLogEntry[]>(
-  Object.entries(MOCK_AUDIT_LOGS).map(([caseId, entries]) => [
+let cases: Case[] = [...MOCK_CASES, ...MOCK_DOCUMENT_CASES].map(cloneCase)
+const auditLogs = new Map<string, AuditLogEntry[]>([
+  ...Object.entries(MOCK_AUDIT_LOGS).map(([caseId, entries]) => [
     caseId,
     entries.map(cloneAuditLog),
-  ]),
-)
+  ] as const),
+  ...Object.entries(MOCK_DOCUMENT_AUDIT_LOGS).map(([caseId, entries]) => [
+    caseId,
+    entries.map(cloneAuditLog),
+  ] as const),
+])
 const pendingExtractions = new Map<string, ReturnType<typeof setTimeout>>()
 
 function clearPendingExtractions(): void {
@@ -54,21 +67,39 @@ function clearPendingExtractions(): void {
 
 export function resetMockStore(): void {
   clearPendingExtractions()
-  cases = MOCK_CASES.map(cloneCase)
+  cases = [...MOCK_CASES, ...MOCK_DOCUMENT_CASES].map(cloneCase)
   auditLogs.clear()
   for (const [caseId, entries] of Object.entries(MOCK_AUDIT_LOGS)) {
     auditLogs.set(caseId, entries.map(cloneAuditLog))
   }
+  for (const [caseId, entries] of Object.entries(MOCK_DOCUMENT_AUDIT_LOGS)) {
+    auditLogs.set(caseId, entries.map(cloneAuditLog))
+  }
+}
+
+function matchesCaseType(applicationCase: Case, caseType?: CaseType | CaseType[] | null): boolean {
+  if (!caseType) {
+    return true
+  }
+  if (Array.isArray(caseType)) {
+    return caseType.includes(applicationCase.caseType)
+  }
+  return applicationCase.caseType === caseType
 }
 
 export function listMockCases(params: {
   status?: CaseStatus | null
   search?: string | null
+  caseType?: CaseType | CaseType[] | null
   page: number
   size: number
 }) {
   const searchTerm = params.search?.trim().toLowerCase() ?? ''
   let filtered = [...cases]
+
+  if (params.caseType) {
+    filtered = filtered.filter((applicationCase) => matchesCaseType(applicationCase, params.caseType))
+  }
 
   if (params.status) {
     filtered = filtered.filter((applicationCase) => applicationCase.status === params.status)
@@ -142,6 +173,56 @@ export function createMockCase(fileName: string): Case {
       actor: 'SYSTEM',
       action: 'CASE_CREATED',
       detail: `Uploaded ${fileName}`,
+      timestamp,
+    },
+  ])
+
+  return cloneCase(applicationCase)
+}
+
+export function createMockDocumentCase(fileName: string, caseType: DocumentCaseType): Case {
+  const caseId = newId('doc-case')
+  const documentId = newId('doc')
+  const timestamp = nowIso()
+  const isDocx = fileName.toLowerCase().endsWith('.docx')
+
+  const applicationCase: Case = {
+    caseId,
+    caseType,
+    extractedPayload: null,
+    status: 'NEW',
+    studentName: null,
+    studentId: null,
+    companyName: null,
+    supervisorName: null,
+    supervisorEmail: null,
+    fieldOfStudy: null,
+    internshipStartDate: null,
+    internshipEndDate: null,
+    recommendation: null,
+    recommendationReason: null,
+    validation: null,
+    documents: [
+      {
+        id: documentId,
+        fileName,
+        contentType: isDocx
+          ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+          : 'application/pdf',
+        pageCount: isDocx ? null : 1,
+      },
+    ],
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  }
+
+  cases.unshift(applicationCase)
+  auditLogs.set(caseId, [
+    {
+      id: newId('audit'),
+      actor: 'SYSTEM',
+      action: 'CASE_CREATED',
+      detail: `${caseType === 'LEARNING_OUTCOMES_REPORT' ? 'Learning outcomes report' : 'Internship journal'} uploaded`,
       timestamp,
     },
   ])

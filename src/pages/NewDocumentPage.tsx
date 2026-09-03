@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getMutationErrorMessage } from '../api/hooks/caseQueryUtils'
-import { useCreateCase } from '../api/hooks/useCreateCase'
+import { useCreateDocumentCase } from '../api/hooks/useCreateDocumentCase'
+import type { DocumentCaseType } from '../api/types'
 import { Button, EmptyState, Spinner, useToast } from '../components'
-import { validateUploadFile } from '../features/cases/upload/uploadUtils'
+import { validateDocumentUploadFile } from '../features/cases/upload/uploadUtils'
 import pageStyles from './Page.module.css'
-import styles from './NewApplicationPage.module.css'
+import styles from './NewDocumentPage.module.css'
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) {
@@ -17,13 +18,33 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-export function NewApplicationPage() {
+const DOCUMENT_TYPES: {
+  value: DocumentCaseType
+  label: string
+  description: string
+}[] = [
+  {
+    value: 'LEARNING_OUTCOMES_REPORT',
+    label: 'Learning Outcomes Report',
+    description:
+      'End-of-internship report documenting how the student achieved each learning outcome.',
+  },
+  {
+    value: 'INTERNSHIP_JOURNAL',
+    label: 'Internship Journal',
+    description:
+      'Weekly log of hours and activities completed during the internship period.',
+  },
+]
+
+export function NewDocumentPage() {
   const navigate = useNavigate()
   const { showToast } = useToast()
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const createMutation = useCreateCase()
+  const createMutation = useCreateDocumentCase()
   const { uploadProgress } = createMutation
 
+  const [caseType, setCaseType] = useState<DocumentCaseType>('LEARNING_OUTCOMES_REPORT')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [validationError, setValidationError] = useState<string | null>(null)
   const [isDragActive, setIsDragActive] = useState(false)
@@ -31,7 +52,7 @@ export function NewApplicationPage() {
   const isUploading = createMutation.isPending
   const uploadError =
     createMutation.isError && selectedFile
-      ? getMutationErrorMessage(createMutation.error, 'Failed to upload application')
+      ? getMutationErrorMessage(createMutation.error, 'Failed to upload document')
       : null
 
   function handleFile(file: File | undefined) {
@@ -41,7 +62,7 @@ export function NewApplicationPage() {
 
     createMutation.reset()
 
-    const error = validateUploadFile(file)
+    const error = validateDocumentUploadFile(file)
     if (error) {
       setValidationError(error)
       setSelectedFile(null)
@@ -57,34 +78,62 @@ export function NewApplicationPage() {
       return
     }
 
-    createMutation.mutate(selectedFile, {
-      onSuccess: (createdCase) => {
-        showToast('Application uploaded successfully', 'success')
-        navigate(`/cases/${createdCase.caseId}`)
+    createMutation.mutate(
+      { file: selectedFile, caseType },
+      {
+        onSuccess: (createdCase) => {
+          showToast('Document uploaded successfully', 'success')
+          navigate(`/documents/${createdCase.caseId}`)
+        },
+        onError: (error) => {
+          showToast(getMutationErrorMessage(error, 'Failed to upload document'), 'error')
+        },
       },
-      onError: (error) => {
-        showToast(getMutationErrorMessage(error, 'Failed to upload application'), 'error')
-      },
-    })
+    )
   }
 
   return (
-    <section className={`${pageStyles.page} ${pageStyles.pageEnter}`} aria-labelledby="new-application-heading">
+    <section
+      className={`${pageStyles.page} ${pageStyles.pageEnter}`}
+      aria-labelledby="new-document-heading"
+    >
       <div className={pageStyles.hero}>
-        <p className={pageStyles.eyebrow}>Intake</p>
-        <h2 id="new-application-heading" className={pageStyles.title}>
-          New Application
+        <p className={pageStyles.eyebrow}>Internship Documents</p>
+        <h2 id="new-document-heading" className={pageStyles.title}>
+          Upload document
         </h2>
         <p className={pageStyles.lead}>
-          Upload a student internship application PDF to create a new case for processing.
+          Select the document type, then upload a PDF or Word (.docx) file for AI-assisted review.
         </p>
       </div>
+
+      <fieldset className={styles.typeSelector} disabled={isUploading}>
+        <legend className={styles.typeLegend}>Document type</legend>
+        <div className={styles.typeGrid}>
+          {DOCUMENT_TYPES.map((option) => (
+            <label
+              key={option.value}
+              className={`${styles.typeCard} ${caseType === option.value ? styles.typeCardActive : ''}`}
+            >
+              <input
+                type="radio"
+                name="caseType"
+                value={option.value}
+                checked={caseType === option.value}
+                onChange={() => setCaseType(option.value)}
+              />
+              <span className={styles.typeCardLabel}>{option.label}</span>
+              <span className={styles.typeCardDescription}>{option.description}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
       <input
         ref={fileInputRef}
         className={styles.fileInput}
         type="file"
-        accept="application/pdf,.pdf"
+        accept="application/pdf,.pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         disabled={isUploading}
         onChange={(event) => handleFile(event.target.files?.[0])}
       />
@@ -94,7 +143,6 @@ export function NewApplicationPage() {
         role="button"
         tabIndex={0}
         aria-busy={isUploading}
-        aria-describedby="upload-zone-hint"
         onClick={() => !isUploading && fileInputRef.current?.click()}
         onKeyDown={(event) => {
           if ((event.key === 'Enter' || event.key === ' ') && !isUploading) {
@@ -128,8 +176,8 @@ export function NewApplicationPage() {
       >
         {isUploading ? (
           <div className={styles.uploadOverlay} aria-live="polite">
-            <Spinner size="lg" label="Uploading application" />
-            <p className={styles.uploadOverlayLabel}>Uploading application…</p>
+            <Spinner size="lg" label="Uploading document" />
+            <p className={styles.uploadOverlayLabel}>Uploading document…</p>
           </div>
         ) : null}
         <svg className={styles.uploadIcon} viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -141,10 +189,8 @@ export function NewApplicationPage() {
             strokeLinejoin="round"
           />
         </svg>
-        <p className={styles.uploadTitle}>Drop PDF here or click to browse</p>
-        <p id="upload-zone-hint" className={styles.uploadHint}>
-          PDF only · max 10 MB
-        </p>
+        <p className={styles.uploadTitle}>Drop PDF or DOCX here, or click to browse</p>
+        <p className={styles.uploadHint}>PDF or Word (.docx) only · max 10 MB</p>
       </div>
 
       {validationError ? (
@@ -158,17 +204,6 @@ export function NewApplicationPage() {
           <EmptyState
             title="Upload failed"
             description={uploadError}
-            icon={
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M12 8v5m0 3h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            }
             action={
               <Button
                 variant="primary"
@@ -230,7 +265,7 @@ export function NewApplicationPage() {
           disabled={!selectedFile || isUploading}
           onClick={handleUpload}
         >
-          Upload and open case
+          Upload and open document
         </Button>
       </div>
     </section>
