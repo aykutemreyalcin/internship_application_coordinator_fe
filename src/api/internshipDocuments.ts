@@ -6,6 +6,8 @@ export type DocumentListParams = Omit<CaseListParams, 'caseType'> & {
   caseType?: DocumentCaseType
 }
 
+const MAX_LIST_FETCH_SIZE = 100
+
 export async function fetchDocuments(
   params: DocumentListParams = {},
 ): Promise<PageResponse<CaseSummary>> {
@@ -19,7 +21,7 @@ export async function fetchDocuments(
         ...params,
         caseType,
         page: 0,
-        size: 500,
+        size: MAX_LIST_FETCH_SIZE,
       }),
     ),
   )
