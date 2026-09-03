@@ -102,22 +102,25 @@ function ReportSummary({ payload }: { payload: LearningOutcomesReportPayload }) 
   )
 }
 
-function JournalSummary({ payload }: { payload: InternshipJournalPayload }) {
+function JournalSummary({ payload, caseData }: { payload: InternshipJournalPayload; caseData: Case }) {
   const [openWeeks, setOpenWeeks] = useState<Record<number, boolean>>({ 0: true })
 
   return (
     <>
       <div className={styles.fieldGrid}>
         <Field label="Faculty" value={payload.faculty} />
-        <Field label="Field of study" value={payload.fieldOfStudy} />
-        <Field label="Student" value={payload.studentName} />
-        <Field label="Student ID" value={payload.studentId} />
+        <Field label="Field of study" value={payload.fieldOfStudy ?? caseData.fieldOfStudy} />
+        <Field label="Student" value={payload.studentName ?? caseData.studentName} />
+        <Field label="Student ID" value={payload.studentId ?? caseData.studentId} />
         <Field label="Study form" value={payload.studyForm} />
         <Field label="Academic year" value={payload.academicYear} />
-        <Field label="Company" value={payload.companyName} />
+        <Field label="Company" value={payload.companyName ?? caseData.companyName} />
         <Field label="Company address" value={payload.companyAddress} />
-        <Field label="Supervisor" value={payload.companySupervisorName} />
-        <Field label="Internship period" value={`${payload.internshipStartDate ?? '?'} → ${payload.internshipEndDate ?? '?'}`} />
+        <Field label="Supervisor" value={payload.companySupervisorName ?? caseData.supervisorName} />
+        <Field
+          label="Internship period"
+          value={`${payload.internshipStartDate ?? caseData.internshipStartDate ?? '?'} → ${payload.internshipEndDate ?? caseData.internshipEndDate ?? '?'}`}
+        />
       </div>
 
       <h3 className={styles.sectionTitle}>Weekly timesheets</h3>
@@ -207,7 +210,7 @@ export function DocumentSummaryTab({ caseData }: DocumentSummaryTabProps) {
       ) : null}
 
       {isReportPayload(payload) ? <ReportSummary payload={payload} /> : null}
-      {isJournalPayload(payload) ? <JournalSummary payload={payload} /> : null}
+      {isJournalPayload(payload) ? <JournalSummary payload={payload} caseData={caseData} /> : null}
     </div>
   )
 }
